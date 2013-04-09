@@ -1,0 +1,53 @@
+﻿@model SmallRss.Web.Models.Manage.IndexViewModel
+@*
+TODO: validate rss feed
+TODO: implement "Fill from feed"
+TODO: load feed items when a new RSS url is added
+*@
+<h2>Current Feeds</h2>
+@if (Model.Feeds.Any())
+{
+    <table>
+        @foreach (var feed in Model.Feeds)
+        {
+            <tr>
+                <td title="@feed.Url">@feed.Group / @feed.Name</td><td><a href="@Url.Action("edit")/@feed.Id">Edit</a></td><td><form action="@Url.Action("delete")" method="post"><input type="hidden" name="id" value="@feed.Id" /><input type="submit" value="Delete" /></form></td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>
+        You currently have no subscriptions.
+    </p>
+}
+
+<h2>Add New Feed</h2>
+<form method="post" action="@Url.Action("add")">
+    <p>
+        <label for="groupSel">Group:</label>
+        @if (Model.CurrentGroups.Any())
+        {
+            <select id="groupSel" name="groupSel">
+                <option value="">New...</option>
+                @foreach (var group in Model.CurrentGroups) {
+                <option>@group</option>
+                }
+            </select>
+        }
+        <input type="text" name="group" />
+        
+        <br />
+        <label for="url">Feed URL:</label>
+        <input type="url" id="url" name="url" />
+
+        <br />
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" /> (<input type="button" value="Fill from feed" />)
+
+        <p>
+            <input type="submit" value="Add" />
+        </p>
+    </p>
+</form>

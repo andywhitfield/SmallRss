@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>SmallRss</title>
+        @* TODO <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" /> *@
+        <meta name="viewport" content="width=device-width" />
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr", "~/bundles/jquery")
+        <script type="text/javascript">
+            var urls = {
+                feedstatus_api: '@Url.Action("feedstatus", "api")',
+                article_api: '@Url.Action("article", "api")',
+                feed_api: '@Url.Action("feed", "api")'
+            };
+        </script>
+    </head>
+    <body>
+        <header>
+            <a href="@Url.Action("", "")">SmallRss</a>
+            @if (User != null && User.Identity.IsAuthenticated) {
+            <a href="@Url.Action("", "manage")">Manage feeds</a>
+            }
+        </header>
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+        <footer>&copy; @DateTime.Now.Year - A.Whitfield Limited</footer>
+
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

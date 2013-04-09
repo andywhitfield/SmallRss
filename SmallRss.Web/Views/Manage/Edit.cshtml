@@ -1,0 +1,30 @@
+﻿@model SmallRss.Web.Models.Manage.EditViewModel
+<h2>Edit Feed</h2>
+<form method="post" action="@Url.Action("save")">
+    <input type="hidden" name="id" value="@Model.Feed.Id" />
+    <p>
+        <label for="groupSel">Group:</label>
+        @if (Model.CurrentGroups.Any())
+        {
+            <select id="groupSel" name="groupSel">
+                <option value="">New...</option>
+                @foreach (var group in Model.CurrentGroups) {
+                <option@{if (Model.Feed.Group == group) { <text> selected</text> }}>@group</option>
+                }
+            </select>
+        }
+        <input type="text" name="group" value="@Model.Feed.Group" />
+        
+        <br />
+        <label for="url">Feed URL:</label>
+        <input type="url" id="url" name="url" value="@Model.Feed.Url" />
+
+        <br />
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="@Model.Feed.Name" />
+
+        <p>
+            <input type="submit" value="Update" />
+        </p>
+    </p>
+</form>

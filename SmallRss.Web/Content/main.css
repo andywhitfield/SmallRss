@@ -1,0 +1,7 @@
+﻿body {
+    font: normal .80em Verdana, arial, sans-serif;
+}
+
+.unread-items {
+    font-weight: bold;
+}
