@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Raven.Client;
-using Raven.Client.Linq;
-using SmallRss.Web.Models;
+using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,11 +12,11 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class FeedController : ApiController
     {
-        private readonly IDocumentSession documentSession;
+        private readonly IDatastore datastore;
 
-        public FeedController(IDocumentSession documentSession)
+        public FeedController(IDatastore datastore)
         {
-            this.documentSession = documentSession;
+            this.datastore = datastore;
         }
 
         // GET api/feed
@@ -26,11 +24,18 @@ namespace SmallRss.Web.Controllers
         {
             Trace.WriteLine("Getting all feeds from db");
             
-            var currentUser = this.CurrentUser(documentSession);
+            var loggedInUser = this.CurrentUser(datastore);
+            var userFeeds = datastore.Load<UserFeed>("UserAccountId", loggedInUser.Id);
 
-            return documentSession.Load<Feed>(currentUser.Feeds.Cast<ValueType>()).Take(FeedConstants.MaxFeeds).GroupBy(f => f.GroupName).OrderBy(g => g.Key).Select(group =>
-                new { label = group.Key, expanded = currentUser.Expanded.Contains(group.Key), items = group.OrderBy(g => g.Name).Select(g =>
-                    new { label = g.Name, value = g.Id }) });
+            return userFeeds.GroupBy(f => f.GroupName).OrderBy(g => g.Key).Select(group =>
+                new
+                {
+                    id = group.Key,
+                    item = group.Key,
+                    props = new { isFolder = true, open = loggedInUser.ExpandedGroups.Contains(group.Key) },
+                    items = group.OrderBy(g => g.Name).Select(g =>
+                        new { id = g.Id, item = g.Name, props = new { isFolder = false } })
+                });
         }
 
         // GET api/feed/5
@@ -38,34 +43,42 @@ namespace SmallRss.Web.Controllers
         {
             Trace.TraceInformation("Getting articles for feed {0} from db", id);
 
-            var currentUser = this.CurrentUser(documentSession);
-            var showAllItems = currentUser.ShowAllItems;
-            var feed = documentSession.Load<Feed>(id);
-            var readArticles = feed.ArticlesRead.Take(FeedConstants.MaxArticles).ToList();
+            var loggedInUser = this.CurrentUser(datastore);
+            var feed = datastore.Load<UserFeed>(id);
+            var readArticles = datastore.Load<UserArticlesRead>("UserFeedId", feed.Id).ToList();
 
-            return documentSession
-                .Query<Article>()
-                .Where(a => a.RssId == feed.RssId)
-                .Take(FeedConstants.MaxArticles)
-                .OrderBy(a => a.Date)
-                .ToList()
-                .Where(a => showAllItems || !readArticles.Contains(a.Id))
-                .Select(a => new { read = readArticles.Contains(a.Id), feed = id, story = a.Id, heading = a.Heading, article = Preview(a.ArticleBody), posted = Date(a.Date) });
+            IEnumerable<Article> articles;
+            if (loggedInUser.ShowAllItems)
+            {
+                articles = datastore.Load<Article>("RssFeedId", feed.RssFeedId);
+            }
+            else
+            {
+                articles = datastore.LoadUnreadArticlesInUserFeed(feed);
+            }
+
+            return articles
+                .OrderBy(a => a.Published)
+                .Select(a => new { read = readArticles.Any(uar => uar.ArticleId == a.Id), feed = id, story = a.Id, heading = a.Heading, article = Preview(a.Body), posted = Date(a.Published) });
         }
 
-        private string Date(DateTime articleDate)
+        private string Date(DateTime? articleDate)
         {
             var format = "dd-MMM-yyyy HH:mm";
+
+            if (!articleDate.HasValue)
+                articleDate = DateTime.UtcNow;
+
             var age = DateTime.UtcNow - articleDate;
 
-            if (age < TimeSpan.FromDays(1))
+            if (age < TimeSpan.FromDays(1) && DateTime.UtcNow.Day == articleDate.Value.Day)
                 format = "HH:mm";
-            else if (age < TimeSpan.FromDays(7))
+            else if (age < TimeSpan.FromDays(5))
                 format = "ddd HH:mm";
             else if (age < TimeSpan.FromDays(100))
                 format = "dd-MMM HH:mm";
 
-            return articleDate.ToString(format);
+            return articleDate.Value.ToString(format);
         }
 
         private string Preview(string articleBody)
@@ -80,6 +93,7 @@ namespace SmallRss.Web.Controllers
                 writer.Flush();
                 previewText = writer.ToString();
             }
+            previewText = previewText.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
             if (previewText.Length > 100)
                 previewText = previewText.Substring(0, 99) + "...";
@@ -106,14 +120,15 @@ namespace SmallRss.Web.Controllers
                         break;
 
                     if (html.Trim().Length > 0)
-                        writer.Write(HtmlEntity.DeEntitize(html));
+                        try { writer.Write(HtmlEntity.DeEntitize(html)); }
+                        catch (Exception) { }
 
                     break;
                 case HtmlNodeType.Element:
                     switch (node.Name)
                     {
                         case "p":
-                            writer.Write("\r\n");
+                            writer.Write("\n");
                             break;
                     }
 

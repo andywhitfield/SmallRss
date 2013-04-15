@@ -63,8 +63,6 @@ local.properties
 .builds
 *.dotCover
 App_Data/
-Data/
-Databases/
 
 ## TODO: If you have NuGet Package Restore enabled, uncomment this
 #packages/

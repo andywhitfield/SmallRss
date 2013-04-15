@@ -1,48 +1,44 @@
 ﻿@model SmallRss.Web.Models.Home.IndexViewModel
 <div id="mainSplitter">
-    <div>
-        <div id="jqxTreeLoading" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
-        <div id="jqxTreeNoSubscriptions" data-bind="visible: !loadingFeeds() && !anyFeeds()">You don't yet have any feed subscriptions - <a href="@Url.Action("", "manage")">add some</a>!</div>
-        <div id='jqxTree' data-bind="visible: !loadingFeeds() && anyFeeds()"></div>
+    <div id="splitWest">
+        <div id="feedTreeLoading" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
+        <div id="feedTreeNoSubscriptions" data-bind="visible: !loadingFeeds() && !anyFeeds()">You don't yet have any feed subscriptions - <a href="@Url.Action("", "manage")">add some</a>!</div>
+        <div id="feedTree" class="aciTree" data-bind="visible: !loadingFeeds() && anyFeeds()"></div>
     </div>
-    <div id="rightSplitter">
-		<div style="overflow: scroll">
-            <div data-bind="visible: !isFeedSelected()">
-                <em>No feed selected.</em>
+    <div id="splitCenter">
+        <div id="splitNorth">
+            <div id="articleGridContainer" style="width: 97%; margin: 8px">
+                <div data-bind="visible: !isFeedSelected()">
+                    <em>No feed selected.</em>
+                </div>
+                <div data-bind="visible: isFeedSelected()">
+                    Show: <label for="showAllOrUnread_unread"> unread items </label><input type="radio" id="showAllOrUnread_unread" name="showAllOrUnread" value="unread"@if (!Model.ShowAllItems) { <text> checked="checked"</text>} />
+                    <label for="showAllOrUnread_all"> all items </label><input type="radio" id="showAllOrUnread_all" name="showAllOrUnread" value="all"@if (Model.ShowAllItems) { <text> checked="checked"</text>} />
+                    &nbsp;
+                    <input type="button" id="markAllRead" value="Mark all read" data-bind="visible: anyItemsInFeed()" />
+                </div>
+                <div data-bind="visible: isFeedSelected() && !anyItemsInFeed()">
+                    <p>
+                        <em>No items in the feed.</em>
+                    </p>
+                </div>
+                <div data-bind="visible: isFeedSelected() && anyItemsInFeed()"><table id="articleGrid"></table></div>
             </div>
-            <div data-bind="visible: isFeedSelected()">
-                Show: <label for="showAllOrUnread_unread"> unread items </label><input type="radio" id="showAllOrUnread_unread" name="showAllOrUnread" value="unread"@if (!Model.ShowAllItems) { <text> checked="checked"</text>} />
-                <label for="showAllOrUnread_all"> all items </label><input type="radio" id="showAllOrUnread_all" name="showAllOrUnread" value="all"@if (Model.ShowAllItems) { <text> checked="checked"</text>} />
-                &nbsp;
-                <input type="button" id="markAllRead" value="Mark all read" data-bind="visible: anyItemsInFeed()" />
-            </div>
-            <div data-bind="visible: isFeedSelected() && !anyItemsInFeed()">
-                <p>
-                    <em>No items in the feed.</em>
-                </p>
-            </div>
-            <div id="jqxgrid" data-bind="visible: isFeedSelected() && anyItemsInFeed()"></div>
-		</div>
-		<div style="overflow: scroll">
-            <div data-bind="visible: !isArticleSelected()">
+        </div>
+        <div id="splitSouth">
+            <div id="articleContainer" data-bind="visible: !isArticleSelected()" style="width: 97%; margin: 8px">
                 <em>No article selected.</em>
             </div>
-            <div id="articleBody" data-bind="visible: isArticleSelected">
+            <div id="articleBody" data-bind="visible: isArticleSelected" style="width: 97%; margin: 8px">
                 <p>
-                <a href="#" target="_blank" data-bind="text: articleTitle, attr: { href: articleUrl }"></a>
+                <a class="articleLink" href="#" target="_blank" data-bind="text: articleTitle, attr: { href: articleUrl }"></a>
                 </p>
                 <p><span data-bind="html: articleBody"></span></p>
-                <p>
+                <p class="articleActions">
                     <input type="button" id="keepUnread" value="Keep unread" />
                     <input type="button" id="openArticle" value="Open article" />
                 </p>
             </div>
-		</div>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    @Styles.Render("~/Content/jqwidgets")
-    @Scripts.Render("~/bundles/knockoutjs", "~/bundles/jqwidgets", "~/bundles/sammy")
-    @Scripts.Render("~/bundles/smallrss")
-}

@@ -40,6 +40,7 @@ namespace SmallRss.Web.Parsing
         }
 
         readonly XNamespace ns = "http://www.w3.org/2005/Atom";
+        readonly XNamespace nsRssContent = "http://purl.org/rss/1.0/modules/content/";
 
         private void ParseAtom10Header(Atom10Feed atomFeed, string xml)
         {
@@ -159,7 +160,7 @@ namespace SmallRss.Web.Parsing
                 rssFeed.Items.Add(ParseRss20SingleItem(item));
             }
         }
-
+            
         private BaseFeedItem ParseRss20SingleItem(XElement itemNode)
         {
             var titleNode = itemNode.Element("title");
@@ -169,16 +170,18 @@ namespace SmallRss.Web.Parsing
             var idNode = itemNode.Element("guid");
             var contentNode = itemNode.Element("description");
             var linkNode = itemNode.Element("link");
+            var encodedContentNode = itemNode.Element(XName.Get("encoded", nsRssContent.NamespaceName));
+            var atomUpdatedDate = itemNode.Element(XName.Get("updated", ns.NamespaceName));
 
             DateTime datePublished;
             BaseFeedItem item = new Rss20FeedItem
             {
                 Title = titleNode == null ? string.Empty : titleNode.Value,
-                DatePublished = datePublishedNode == null ? DateTime.UtcNow : (DateParser.TryParseRfc822DateTime(datePublishedNode.Value, out datePublished) ? datePublished : DateTime.UtcNow),
+                DatePublished = datePublishedNode == null ? (atomUpdatedDate == null ? DateTime.UtcNow : DateParser.TryParseRfc3339DateTime(atomUpdatedDate.Value, out datePublished) ? datePublished : DateTime.UtcNow) : (DateParser.TryParseRfc822DateTime(datePublishedNode.Value, out datePublished) ? datePublished : DateTime.UtcNow),
                 Author = authorNode == null ? string.Empty : authorNode.Value,
                 Comments = commentsNode == null ? string.Empty : commentsNode.Value,
-                Id = idNode == null ? string.Empty : idNode.Value,
-                Content = contentNode == null ? string.Empty : contentNode.Value,
+                Id = idNode == null ? (linkNode == null ? (titleNode == null ? string.Empty : titleNode.Value) : linkNode.Value) : idNode.Value,
+                Content = encodedContentNode == null ? (contentNode == null ? string.Empty : contentNode.Value) : encodedContentNode.Value,
                 Link = linkNode == null ? string.Empty : linkNode.Value
             };
 

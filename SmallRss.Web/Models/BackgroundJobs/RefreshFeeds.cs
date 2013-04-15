@@ -1,6 +1,5 @@
 ﻿using QDFeedParser;
-using Raven.Client;
-using Raven.Client.Linq;
+using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,12 +10,12 @@ namespace SmallRss.Web.Models.BackgroundJobs
     public class RefreshFeeds
     {
         private readonly IFeedFactory feedFactory;
-        private readonly IDocumentStore documentStore;
+        private readonly IDatastore datastore;
 
-        public RefreshFeeds(IFeedFactory feedFactory, IDocumentStore documentStore)
+        public RefreshFeeds(IFeedFactory feedFactory, IDatastore datastore)
         {
             this.feedFactory = feedFactory;
-            this.documentStore = documentStore;
+            this.datastore = datastore;
         }
 
         public void Refresh()
@@ -24,27 +23,25 @@ namespace SmallRss.Web.Models.BackgroundJobs
             Trace.TraceInformation("Refreshing all RSS feeds...");
             try
             {
-                IList<Rss> allRssFeeds;
-                using (var documentSession = documentStore.OpenSession())
-                {
-                    allRssFeeds = documentSession.Query<Rss>().Take(FeedConstants.MaxFeeds).ToList();
-                }
+                IEnumerable<RssFeed> allRssFeeds = datastore.Load<RssFeed>("1", 1).ToList();
+                int refreshed = 0;
 
                 foreach (var rssFeed in allRssFeeds)
                 {
                     try
                     {
-                        Trace.TraceInformation("Refreshing {0} ", rssFeed.Url);
+                        Trace.TraceInformation("Refreshing {0} ", rssFeed.Uri);
 
                         RefreshRssFeed(rssFeed);
+                        refreshed++;
                     }
                     catch (Exception ex)
                     {
-                        Trace.TraceInformation("Error refreshing RSS feed {0} [{1}]: {2}", rssFeed.Id, rssFeed.Url, ex);
+                        Trace.TraceInformation("Error refreshing RSS feed {0} [{1}]: {2}", rssFeed.Id, rssFeed.Uri, ex);
                     }
                 }
 
-                Trace.TraceInformation("Done refreshing all RSS feeds ({0} feeds).", allRssFeeds.Count);
+                Trace.TraceInformation("Done refreshing all RSS feeds ({0} feeds).", refreshed);
             }
             catch (Exception ex)
             {
@@ -52,59 +49,52 @@ namespace SmallRss.Web.Models.BackgroundJobs
             }
         }
 
-        private void RefreshRssFeed(Rss rssFeed)
+        private void RefreshRssFeed(RssFeed rssFeed)
         {
-            using (var documentSession = documentStore.OpenSession())
-            {
-                var feed = feedFactory.CreateFeed(new Uri(rssFeed.Url));
-                var lastItemUpdate = feed.Items.Select(i => i.DatePublished.ToUniversalTime()).Concat(new [] { feed.LastUpdated.ToUniversalTime() }).Max();
+            var feed = feedFactory.CreateFeed(new Uri(rssFeed.Uri));
+            var lastItemUpdate = feed.Items.Select(i => i.DatePublished.ToUniversalTime()).Concat(new[] { feed.LastUpdated.ToUniversalTime() }).Max();
 
-                Trace.TraceInformation("Feed {0} was last updated {1} - our version was updated: {2}", rssFeed.Url, lastItemUpdate, rssFeed.LastUpdated);
-                if (lastItemUpdate > rssFeed.LastUpdated)
-                {
-                    UpdateFeedItems(documentSession, feed, rssFeed);
-                    rssFeed.LastUpdated = lastItemUpdate;
-                }
-                rssFeed.LastRefresh = DateTime.UtcNow;
-                documentSession.Store(rssFeed);
-                documentSession.SaveChanges();
+            Trace.TraceInformation("Feed {0} was last updated {1} - our version was updated: {2}", rssFeed.Uri, lastItemUpdate, rssFeed.LastUpdated);
+            if (!rssFeed.LastUpdated.HasValue || lastItemUpdate > rssFeed.LastUpdated)
+            {
+                UpdateFeedItems(feed, rssFeed);
+                rssFeed.LastUpdated = lastItemUpdate;
             }
+            rssFeed.LastRefreshed = DateTime.UtcNow;
+            datastore.Update(rssFeed);
         }
 
-        private static void UpdateFeedItems(IDocumentSession documentSession, IFeed feed, Rss rssFeed)
+        private void UpdateFeedItems(IFeed feed, RssFeed rssFeed)
         {
             Trace.TraceInformation("There are new items, updating...");
 
-            var feedItemGuids = feed.Items.Select(f => f.Id).ToList();
-            var existing = (from article in documentSession.Query<Article>()
-                            where article.ArticleGuid.In(feedItemGuids) && article.RssId == rssFeed.Id
-                            select article).Take(FeedConstants.MaxArticles).ToList();
+            var existing = datastore.Load<Article>("RssFeedId", rssFeed.Id).ToList();
             foreach (var itemInFeed in feed.Items)
             {
                 var existingArticle = existing.FirstOrDefault(e => e.ArticleGuid == itemInFeed.Id);
                 if (existingArticle != null)
                 {
-                    if (itemInFeed.DatePublished.ToUniversalTime() > existingArticle.Date)
+                    if (itemInFeed.DatePublished.ToUniversalTime() > existingArticle.Published)
                     {
-                        Trace.TraceInformation("Article {0} has updated ({1} - our version {2}), updating our instance", existingArticle.ArticleGuid, itemInFeed.DatePublished.ToUniversalTime(), existingArticle.Date);
+                        Trace.TraceInformation("Article {0} has updated ({1} - our version {2}), updating our instance", existingArticle.ArticleGuid, itemInFeed.DatePublished.ToUniversalTime(), existingArticle.Published);
                         existingArticle.Heading = itemInFeed.Title;
-                        existingArticle.ArticleBody = itemInFeed.Content;
-                        existingArticle.ArticleUrl = itemInFeed.Link;
-                        existingArticle.Date = itemInFeed.DatePublished.ToUniversalTime();
-                        documentSession.Store(existingArticle);
+                        existingArticle.Body = itemInFeed.Content;
+                        existingArticle.Url = itemInFeed.Link;
+                        existingArticle.Published = itemInFeed.DatePublished.ToUniversalTime();
+                        datastore.Update(existingArticle);
                     }
                 }
                 else
                 {
-                    Trace.TraceInformation("Add new article {0}|{1} to feed {2}", itemInFeed.Id, itemInFeed.Title, rssFeed.Url);
-                    documentSession.Store(new Article
+                    Trace.TraceInformation("Add new article {0}|{1} to feed {2}", itemInFeed.Id, itemInFeed.Title, rssFeed.Uri);
+                    datastore.Store(new Article
                     {
                         Heading = itemInFeed.Title,
-                        ArticleBody = itemInFeed.Content,
-                        ArticleUrl = itemInFeed.Link,
-                        Date = itemInFeed.DatePublished.ToUniversalTime(),
+                        Body = itemInFeed.Content,
+                        Url = itemInFeed.Link,
+                        Published = itemInFeed.DatePublished.ToUniversalTime(),
                         ArticleGuid = itemInFeed.Id,
-                        RssId = rssFeed.Id
+                        RssFeedId = rssFeed.Id
                     });
                 }
             }

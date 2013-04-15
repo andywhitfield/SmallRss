@@ -1,0 +1,40 @@
+﻿body, p, div, span, a {
+    font-family: Verdana, Georgia, sans-serif;
+    font-size: 11pt;
+}
+
+a, a:link, a:visited {
+    color: #2779aa;
+}
+a:hover, a:active {
+    color: #ff6a00;
+}
+
+input {
+    margin: 0 0 8px 0;
+}
+
+#mainPanel {
+    position: absolute;
+    top: 30px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px solid #000;
+    overflow: hidden;
+}
+
+.unread-item {
+    font-weight: bold;
+}
+
+.articleLink {
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+.articleActions {
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px dotted #000;
+}

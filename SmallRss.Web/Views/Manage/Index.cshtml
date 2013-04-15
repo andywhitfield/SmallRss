@@ -2,7 +2,8 @@
 @*
 TODO: validate rss feed
 TODO: implement "Fill from feed"
-TODO: load feed items when a new RSS url is added
+TODO: load feed items when a new RSS url is added (message to service?)
+TODO: remove old rss items if no feeds attached (probably as part of a background job)
 *@
 <h2>Current Feeds</h2>
 @if (Model.Feeds.Any())
@@ -44,10 +45,27 @@ else
 
         <br />
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" /> (<input type="button" value="Fill from feed" />)
+        <input type="text" id="name" name="name" /> (<input id="fillNameFromFeed" type="button" value="Fill from feed" />)
 
         <p>
             <input type="submit" value="Add" />
         </p>
     </p>
 </form>
+
+@section Scripts {
+<script type="text/javascript">
+    $(function () {
+        $('#fillNameFromFeed').click(function () {
+            $.get('@Url.Action("rss", "api")', { url: $('#url').val() }, function (result) {
+                if (result.title != null) {
+                    $('#name').val(result.title);
+                } else {
+                    // TODO: show error somehow
+                    //alert(result.error);
+                }
+            });
+        });
+    });
+</script>
+}

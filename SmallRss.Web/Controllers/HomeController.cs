@@ -1,13 +1,9 @@
 ﻿using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
 using DotNetOpenAuth.OpenId.RelyingParty;
-using Raven.Client;
-using Raven.Client.Linq;
-using SmallRss.Web.Models;
 using SmallRss.Web.Models.Home;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -16,11 +12,11 @@ namespace SmallRss.Web.Controllers
     public class HomeController : Controller
     {
         private static OpenIdRelyingParty openid = new OpenIdRelyingParty();
-        private readonly IDocumentSession documentSession;
+        private readonly IDatastore datastore;
 
-        public HomeController(IDocumentSession documentSession)
+        public HomeController(IDatastore datastore)
         {
-            this.documentSession = documentSession;
+            this.datastore = datastore;
         }
 
         [Authorize]
@@ -30,7 +26,7 @@ namespace SmallRss.Web.Controllers
                 "X-XRDS-Location",
                 new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
-            return View(new IndexViewModel { ShowAllItems = this.CurrentUser(documentSession).ShowAllItems });
+            return View(new IndexViewModel { ShowAllItems = this.CurrentUser(datastore).ShowAllItems });
         }
 
         public ActionResult Xrds() { return View(); }
@@ -83,14 +79,8 @@ namespace SmallRss.Web.Controllers
                         string openIdIdentifier = response.ClaimedIdentifier;
                         Trace.TraceInformation("Authenticated: {0}", openIdIdentifier);
 
-                        var existingAccount = documentSession.Query<UserAccount>().Where(a => a.AuthencationIds.Any(id => id == openIdIdentifier));
-                        if (!existingAccount.Any())
-                        {
-                            Trace.TraceInformation("Creating new user account: {0}", openIdIdentifier);
-                            var newUserAccount = new UserAccount();
-                            newUserAccount.AuthencationIds.Add(openIdIdentifier);
-                            documentSession.Store(newUserAccount);
-                        }
+                        var account = datastore.GetOrCreateAccount(openIdIdentifier);
+                        Trace.TraceInformation("Created/loaded user account: {0} - {1}", openIdIdentifier, account.Id);
 
                         FormsAuthentication.SetAuthCookie(openIdIdentifier, true);
                         if (!string.IsNullOrEmpty(returnUrl))

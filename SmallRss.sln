@@ -4,11 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss.Web", "SmallRss.Web\SmallRss.Web.csproj", "{4E484CA3-7D50-4FA3-B5E6-DC8FEFB305F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{05BBFDCB-BCD8-43AC-A47A-72C2E0B11F5C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss.Web.Tests", "SmallRss.Web.Tests\SmallRss.Web.Tests.csproj", "{72130634-92B3-4AA8-BEB2-92E6D3E812AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss.Service", "SmallRss.Service\SmallRss.Service.csproj", "{EC5A26C6-42BB-451A-ABA1-4BE184445B9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss", "SmallRss\SmallRss.csproj", "{3D657F64-D3B2-4C8E-A51D-44331E49B843}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{3011F405-46E3-4963-9E18-CCF75F557480}"
+	ProjectSection(SolutionItems) = preProject
+		CreateFullSchema.sql = CreateFullSchema.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +24,14 @@ Global
 		{4E484CA3-7D50-4FA3-B5E6-DC8FEFB305F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E484CA3-7D50-4FA3-B5E6-DC8FEFB305F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E484CA3-7D50-4FA3-B5E6-DC8FEFB305F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72130634-92B3-4AA8-BEB2-92E6D3E812AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72130634-92B3-4AA8-BEB2-92E6D3E812AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72130634-92B3-4AA8-BEB2-92E6D3E812AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72130634-92B3-4AA8-BEB2-92E6D3E812AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5A26C6-42BB-451A-ABA1-4BE184445B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5A26C6-42BB-451A-ABA1-4BE184445B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5A26C6-42BB-451A-ABA1-4BE184445B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5A26C6-42BB-451A-ABA1-4BE184445B9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D657F64-D3B2-4C8E-A51D-44331E49B843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D657F64-D3B2-4C8E-A51D-44331E49B843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D657F64-D3B2-4C8E-A51D-44331E49B843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D657F64-D3B2-4C8E-A51D-44331E49B843}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

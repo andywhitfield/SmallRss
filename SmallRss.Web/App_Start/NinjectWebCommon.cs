@@ -8,6 +8,7 @@ namespace SmallRss.Web.App_Start
     using Ninject.Web.Common;
     using QDFeedParser;
     using QDFeedParser.Xml;
+    using SmallRss.Data;
     using SmallRss.Web.Models.BackgroundJobs;
     using SmallRss.Web.Parsing;
     using System;
@@ -62,10 +63,11 @@ namespace SmallRss.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Load<RavenDBNinjectModule>();
             kernel.Bind<RefreshFeedsRegisteredObject>().ToSelf().InSingletonScope();
             kernel.Bind<IFeedXmlParser>().To<SmallRssFeedParser>();
             kernel.Bind<IFeedFactory>().To<HttpFeedFactory>();
+            kernel.Bind<PetaPoco.Database>().ToConstructor(c => new PetaPoco.Database("SmallRssDb"));
+            kernel.Bind<IDatastore>().To<PetaPocoDatastore>();
             refreshFeeds = kernel.Get<RefreshFeedsRegisteredObject>();
         }
     }

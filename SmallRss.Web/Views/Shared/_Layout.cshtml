@@ -3,10 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <title>SmallRss</title>
-        @* TODO <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" /> *@
         <meta name="viewport" content="width=device-width" />
-        @Styles.Render("~/Content/css")
-        @Scripts.Render("~/bundles/modernizr", "~/bundles/jquery")
         <script type="text/javascript">
             var urls = {
                 feedstatus_api: '@Url.Action("feedstatus", "api")',
@@ -14,6 +11,8 @@
                 feed_api: '@Url.Action("feed", "api")'
             };
         </script>
+        @Styles.Render("~/resource/css/allcss")
+        @Scripts.Render("~/resource/js/alljs")
     </head>
     <body>
         <header>
@@ -22,10 +21,9 @@
             <a href="@Url.Action("", "manage")">Manage feeds</a>
             }
         </header>
-        <section class="content-wrapper main-content clear-fix">
+        <section id="mainPanel">
             @RenderBody()
         </section>
-        <footer>&copy; @DateTime.Now.Year - A.Whitfield Limited</footer>
 
         @RenderSection("scripts", required: false)
     </body>
