@@ -1,13 +1,13 @@
-﻿namespace SmallRss.Web.Models.Manage
+﻿using SmallRss.Data.Models;
+
+namespace SmallRss.Web.Models.Manage
 {
     public class FeedSubscriptionViewModel
     {
-        //private readonly Feed feed;
-        //private readonly Rss rss;
-        private readonly SmallRss.Data.Models.UserFeed feed;
-        private readonly SmallRss.Data.Models.RssFeed rss;
+        private readonly UserFeed feed;
+        private readonly RssFeed rss;
 
-        public FeedSubscriptionViewModel(SmallRss.Data.Models.UserFeed feed, SmallRss.Data.Models.RssFeed rss)
+        public FeedSubscriptionViewModel(UserFeed feed, RssFeed rss)
         {
             this.feed = feed;
             this.rss = rss;
