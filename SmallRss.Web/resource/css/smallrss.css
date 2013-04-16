@@ -1,6 +1,6 @@
 ﻿body, p, div, span, a {
     font-family: Verdana, Georgia, sans-serif;
-    font-size: 11pt;
+    font-size: 10pt;
 }
 
 a, a:link, a:visited {
@@ -30,7 +30,7 @@ input {
 
 .articleLink {
     font-weight: bold;
-    font-size: 14pt;
+    font-size: 13pt;
 }
 
 .articleActions {

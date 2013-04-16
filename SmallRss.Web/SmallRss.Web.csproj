@@ -229,13 +229,10 @@
     <Compile Include="Views\Home\xrds.aspx.designer.cs">
       <DependentUpon>xrds.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Parsing\DateParser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ArticleReadViewModel.cs" />
-    <Compile Include="Models\BackgroundJobs\RefreshFeeds.cs" />
-    <Compile Include="Models\BackgroundJobs\RefreshFeedsRegisteredObject.cs" />
     <Compile Include="Models\FeedStatusViewModel.cs" />
     <Compile Include="Models\Home\IndexViewModel.cs" />
     <Compile Include="Models\Manage\AddFeedViewModel.cs" />
@@ -243,7 +240,6 @@
     <Compile Include="Models\Manage\FeedSubscriptionViewModel.cs" />
     <Compile Include="Models\Manage\IndexViewModel.cs" />
     <Compile Include="Models\Manage\SaveFeedViewModel.cs" />
-    <Compile Include="Parsing\SmallRssFeedParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

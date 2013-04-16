@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace SmallRss.Web.Parsing
+namespace SmallRss.Parsing
 {
     public class SmallRssFeedParser : IFeedXmlParser
     {
@@ -47,12 +47,12 @@ namespace SmallRss.Web.Parsing
             var document = XDocument.Parse(xml);
             var channel = document.Root;
 
-            var titleNode = channel.Element(ns+ "title");
+            var titleNode = channel.Element(ns + "title");
             atomFeed.Title = titleNode.Value;
 
             var linkNode = channel.Element(ns + "author") != null ? channel.Element(ns + "author").Element(ns + "uri") : null;
 
-            if(linkNode == null)
+            if (linkNode == null)
             {
                 linkNode = channel.Elements(ns + "link").SingleOrDefault(x => x.HasAttributes && x.Attribute("rel") == null) ??
                            channel.Elements(ns + "link").SingleOrDefault(x => x.HasAttributes && x.Attribute("rel") != null && x.Attribute("rel").Value == "alternate");
@@ -78,7 +78,7 @@ namespace SmallRss.Web.Parsing
         private void ParseAtom10Items(Atom10Feed atomFeed, string xml)
         {
             var document = XDocument.Parse(xml);
-            var feedItemNodes = document.Root.Elements(ns+"entry");
+            var feedItemNodes = document.Root.Elements(ns + "entry");
             foreach (var item in feedItemNodes)
             {
                 atomFeed.Items.Add(ParseAtom10SingleItem(item));
@@ -107,7 +107,7 @@ namespace SmallRss.Web.Parsing
             };
 
             var categoryNode = itemNode.Element(ns + "category");
-                                
+
             if (categoryNode != null)
             {
                 var categoryNodes = categoryNode.Elements(ns + "term");
@@ -135,13 +135,21 @@ namespace SmallRss.Web.Parsing
                                 select dateSelector).FirstOrDefault();
             if (dateTimeNode == null)
             {
-                rssFeed.LastUpdated = DateTime.UtcNow;
+                var lastBuildDate = channel.Element("lastBuildDate");
+                if (lastBuildDate != null)
+                {
+                    DateTime timeOut;
+                    rssFeed.LastUpdated = DateParser.TryParseRfc822DateTime(lastBuildDate.Value, out timeOut) ? timeOut : DateTime.UtcNow;
+                }
+                else
+                {
+                    rssFeed.LastUpdated = DateTime.UtcNow;
+                }
             }
             else
             {
                 DateTime timeOut;
-                DateTime.TryParse(dateTimeNode.Value, out timeOut);
-                rssFeed.LastUpdated = timeOut.ToUniversalTime();
+                rssFeed.LastUpdated = DateParser.TryParseRfc822DateTime(dateTimeNode.Value, out timeOut) ? timeOut : DateTime.UtcNow;
             }
 
             var generatorNode = channel.Element("generator");
@@ -160,7 +168,7 @@ namespace SmallRss.Web.Parsing
                 rssFeed.Items.Add(ParseRss20SingleItem(item));
             }
         }
-            
+
         private BaseFeedItem ParseRss20SingleItem(XElement itemNode)
         {
             var titleNode = itemNode.Element("title");

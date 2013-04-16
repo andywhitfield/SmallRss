@@ -9,8 +9,7 @@ namespace SmallRss.Web.App_Start
     using QDFeedParser;
     using QDFeedParser.Xml;
     using SmallRss.Data;
-    using SmallRss.Web.Models.BackgroundJobs;
-    using SmallRss.Web.Parsing;
+    using SmallRss.Parsing;
     using System;
     using System.Web;
     using System.Web.Http;
@@ -19,7 +18,6 @@ namespace SmallRss.Web.App_Start
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
-        private static RefreshFeedsRegisteredObject refreshFeeds;
 
         /// <summary>
         /// Starts the application
@@ -37,7 +35,6 @@ namespace SmallRss.Web.App_Start
         public static void Stop()
         {
             bootstrapper.ShutDown();
-            refreshFeeds.Stop(true);
         }
         
         /// <summary>
@@ -63,12 +60,10 @@ namespace SmallRss.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<RefreshFeedsRegisteredObject>().ToSelf().InSingletonScope();
             kernel.Bind<IFeedXmlParser>().To<SmallRssFeedParser>();
             kernel.Bind<IFeedFactory>().To<HttpFeedFactory>();
             kernel.Bind<PetaPoco.Database>().ToConstructor(c => new PetaPoco.Database("SmallRssDb"));
             kernel.Bind<IDatastore>().To<PetaPocoDatastore>();
-            refreshFeeds = kernel.Get<RefreshFeedsRegisteredObject>();
         }
     }
 }

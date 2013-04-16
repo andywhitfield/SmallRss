@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace SmallRss.Web.Models.BackgroundJobs
+namespace SmallRss.Service
 {
     public class RefreshFeeds
     {
