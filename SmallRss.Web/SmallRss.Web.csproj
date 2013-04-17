@@ -221,7 +221,9 @@
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RssController.cs" />
+    <Compile Include="Controllers\UserLayoutController.cs" />
     <Compile Include="Models\Home\LoginViewModel.cs" />
+    <Compile Include="Models\UserLayoutViewModel.cs" />
     <Compile Include="Views\Home\xrds.aspx.cs">
       <DependentUpon>xrds.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

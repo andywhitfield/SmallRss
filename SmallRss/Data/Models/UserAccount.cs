@@ -13,6 +13,7 @@ namespace SmallRss.Data.Models
             AuthenticationIds = new HashSet<string>();
             ShowAllItems = false;
             ExpandedGroups = new HashSet<string>();
+            SavedLayout = new Dictionary<string, string>();
         }
 
         public int Id { get; set; }
@@ -24,5 +25,7 @@ namespace SmallRss.Data.Models
         public bool ShowAllItems { get; set; }
         [Ignore]
         public ISet<string> ExpandedGroups { get; private set; }
+        [Ignore]
+        public IDictionary<string, string> SavedLayout { get; private set; }
     }
 }

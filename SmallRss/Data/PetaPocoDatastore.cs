@@ -40,7 +40,13 @@ namespace SmallRss.Data
                     SettingType = "ShowAllItems",
                     SettingName = "ShowAllItems",
                     SettingValue = Convert.ToString(userAccount.ShowAllItems)
-                }});
+                }})
+                .Concat(userAccount.SavedLayout.Select(l => new UserAccountSetting {
+                    UserAccountId = userAccount.Id,
+                    SettingType = "SavedLayout",
+                    SettingName = l.Key,
+                    SettingValue = l.Value
+                }));
 
             using (var txn = db.GetTransaction())
             {
@@ -91,6 +97,8 @@ namespace SmallRss.Data
                 account.AuthenticationIds.Add(authId.Item2.SettingValue);
             foreach (var expandedGroup in accountAndSettings.Where(uas => uas.Item2.SettingType == "ExpandedGroup"))
                 account.ExpandedGroups.Add(expandedGroup.Item2.SettingValue);
+            foreach (var savedLayout in accountAndSettings.Where(uas => uas.Item2.SettingType == "SavedLayout"))
+                account.SavedLayout.Add(savedLayout.Item2.SettingName, savedLayout.Item2.SettingValue);
             var showAllItemsSetting = accountAndSettings.FirstOrDefault(uas => uas.Item2.SettingType == "ShowAllItems");
             account.ShowAllItems = showAllItemsSetting == null ? false : Convert.ToBoolean(showAllItemsSetting.Item2.SettingValue);
             return account;

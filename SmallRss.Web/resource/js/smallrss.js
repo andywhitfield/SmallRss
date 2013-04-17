@@ -21,6 +21,8 @@
         var story = this.findFeedItem(id);
         if (story != null) story.read = asRead;
     };
+    this.splitWestPosition = '200';
+    this.splitNorthPosition = '300';
 }
 var model = new SmallRssModel();
 
@@ -127,13 +129,13 @@ $(function () {
             $("#articleGrid").jqGrid('clearGridData');
             console.log('loading articles for ' + this.params['feed']);
 
-            $("#articleGrid").jqGrid('setGridParam', { url: urls.feed_api + '/' + this.params['feed'] });
+            $("#articleGrid").jqGrid('setGridParam', { url: urls.feed_api + '/' + this.params['feed'], datatype: 'json' });
             $("#articleGrid").trigger('reloadGrid');
         });
     });
 
-    $('#mainSplitter').width($('#mainPanel').width()).height($('#mainPanel').height()).split({ orientation: 'vertical', limit: 80, position: '200' });
-    $('#splitCenter').split({ orientation: 'horizontal', limit: 80 });
+    $('#mainSplitter').width($('#mainPanel').width()).height($('#mainPanel').height()).split({ orientation: 'vertical', limit: 80, position: model.splitWestPosition });
+    $('#splitCenter').split({ orientation: 'horizontal', limit: 80, position: model.splitNorthPosition });
 
     $('#feedTree').aciTree({
         animateRoot: false,
@@ -183,8 +185,8 @@ $(function () {
     });
 
     $("#articleGrid").jqGrid({
-        localdata: [], // TODO: initialising queries the root application! can we populate with empty json to start with?
-        datatype: "json",
+        datatype: "jsonstring",
+        datastr: "",
         colNames: ['Story', 'Heading', 'Article', 'Posted', 'Read'],
         colModel: [
             { name: 'story', index: 'story', hidden: true },
@@ -270,10 +272,11 @@ $(function () {
     $('#splitCenter').bind('spliter.resize', function () {
         $("#articleGrid").jqGrid('setGridWidth', $("#articleGridContainer").width());
     });
-
+    $('#mainSplitter').bind('mouseup.spliter', function () {
+        console.log('resized splitter: ' + $('#splitWest').width() + '/' + $('#splitNorth').height());
+        $.post(urls.userlayout_api, { splitWest: $('#splitWest').width(), splitNorth: $('#splitNorth').height() });
+    });
 
     app.run();
     ko.applyBindings(model);
-
-    // TODO: F5 not working
 });

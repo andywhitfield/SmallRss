@@ -1,6 +1,7 @@
 ﻿using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
 using DotNetOpenAuth.OpenId.RelyingParty;
+using SmallRss.Web.Models;
 using SmallRss.Web.Models.Home;
 using System;
 using System.Diagnostics;
@@ -26,7 +27,25 @@ namespace SmallRss.Web.Controllers
                 "X-XRDS-Location",
                 new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
-            return View(new IndexViewModel { ShowAllItems = this.CurrentUser(datastore).ShowAllItems });
+            var currentUser = this.CurrentUser(datastore);
+            var vm = new IndexViewModel { ShowAllItems = currentUser.ShowAllItems };
+
+            Func<string, int?> setSplitterPosition = layoutKey =>
+            {
+                string posString;
+                if (currentUser.SavedLayout.TryGetValue(layoutKey, out posString))
+                {
+                    int posInt;
+                    if (int.TryParse(posString, out posInt) && posInt > 0)
+                        return posInt;
+                }
+                return null;
+            };
+
+            vm.SplitterWestPosition = setSplitterPosition(UserLayoutViewModel.LayoutKeySplitWest);
+            vm.SplitterNorthPosition = setSplitterPosition(UserLayoutViewModel.LayoutKeySplitNorth);
+
+            return View(vm);
         }
 
         public ActionResult Xrds() { return View(); }

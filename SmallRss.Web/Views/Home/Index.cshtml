@@ -42,3 +42,17 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script type="text/javascript">
+        @if (Model.SplitterWestPosition.HasValue) {
+        <text>
+        model.splitWestPosition = '@Model.SplitterWestPosition';
+        </text>
+        }
+        @if (Model.SplitterNorthPosition.HasValue) {
+        <text>
+        model.splitNorthPosition = '@Model.SplitterNorthPosition';
+        </text>
+        }
+    </script>
+}
