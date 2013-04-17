@@ -1,5 +1,4 @@
-﻿using SmallRss.Parsing;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Timers;
 
@@ -20,13 +19,6 @@ namespace SmallRss.Service
 
         public void Start()
         {
-            DateTime d;
-            DateParser.TryParseRfc822DateTime("Mon, 25 Mar 2013 21:00:35 GMT", out d);
-            Console.WriteLine("HERE: " + d.ToString("s"));
-
-            DateTime.TryParseExact("Mon, 25 Mar 2013 21:00:35 +00:00", "ddd, dd MMM yyyy HH:mm:ss zzz", new System.Globalization.CultureInfo("en-US"), System.Globalization.DateTimeStyles.AdjustToUniversal, out d);
-            Console.WriteLine("HERE: " + d.ToString("s"));
-
             refreshTimer.Start();
         }
 
