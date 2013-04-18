@@ -1,4 +1,5 @@
 ﻿@model SmallRss.Web.Models.Home.IndexViewModel
+<section id="mainPanel">
 <div id="mainSplitter">
     <div id="splitWest">
         <div id="feedTreeLoading" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
@@ -42,6 +43,7 @@
         </div>
     </div>
 </div>
+</section>
 @section Scripts {
     <script type="text/javascript">
         @if (Model.SplitterWestPosition.HasValue) {

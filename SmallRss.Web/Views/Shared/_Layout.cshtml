@@ -17,15 +17,12 @@
     </head>
     <body>
         <header>
-            <a href="@Url.Action("", "")">SmallRss</a>
+            <h1><a href="@Url.Action("", "")">SmallRss</a></h1>
             @if (User != null && User.Identity.IsAuthenticated) {
-            <a href="@Url.Action("", "manage")">Manage feeds</a>
+            <span class="manage"><a href="@Url.Action("", "manage")">Manage feeds</a></span>
             }
         </header>
-        <section id="mainPanel">
-            @RenderBody()
-        </section>
-
+        @RenderBody()
         @RenderSection("scripts", required: false)
     </body>
 </html>

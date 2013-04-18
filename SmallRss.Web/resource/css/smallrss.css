@@ -14,6 +14,22 @@ input {
     margin: 0 0 8px 0;
 }
 
+header h1 {
+    display: inline;
+    line-height: 0;
+}
+header h1 a {
+    text-decoration: none;
+    font-size: 15pt;
+    font-weight: bold;
+}
+header span.manage {
+    text-align: right;
+    display: block;
+    position: relative;
+    top: -18px;
+}
+
 #mainPanel {
     position: absolute;
     top: 30px;

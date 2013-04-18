@@ -21,7 +21,7 @@ namespace SmallRss.Web.Controllers
             var user = this.CurrentUser(datastore);
             var feeds = datastore.LoadUserRssFeeds(user.Id);
 
-            return View(new IndexViewModel { Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Group).OrderBy(f => f.Name) });
+            return View(new IndexViewModel { Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) });
         }
 
         public ActionResult Edit(int id)

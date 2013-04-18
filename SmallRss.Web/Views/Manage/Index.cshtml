@@ -1,29 +1,4 @@
 ﻿@model SmallRss.Web.Models.Manage.IndexViewModel
-@*
-TODO: validate rss feed
-TODO: implement "Fill from feed"
-TODO: load feed items when a new RSS url is added (message to service?)
-TODO: remove old rss items if no feeds attached (probably as part of a background job)
-*@
-<h2>Current Feeds</h2>
-@if (Model.Feeds.Any())
-{
-    <table>
-        @foreach (var feed in Model.Feeds)
-        {
-            <tr>
-                <td title="@feed.Url">@feed.Group / @feed.Name</td><td><a href="@Url.Action("edit")/@feed.Id">Edit</a></td><td><form action="@Url.Action("delete")" method="post"><input type="hidden" name="id" value="@feed.Id" /><input type="submit" value="Delete" /></form></td>
-            </tr>
-        }
-    </table>
-}
-else
-{
-    <p>
-        You currently have no subscriptions.
-    </p>
-}
-
 <h2>Add New Feed</h2>
 <form method="post" action="@Url.Action("add")">
     <p>
@@ -52,6 +27,26 @@ else
         </p>
     </p>
 </form>
+
+<h2>Current Feeds</h2>
+@if (Model.Feeds.Any())
+{
+    <table>
+        @foreach (var feed in Model.Feeds)
+        {
+            <tr>
+                <td title="@feed.Url">@feed.Group / @feed.Name</td><td><a href="@Url.Action("edit")/@feed.Id">Edit</a></td><td><form action="@Url.Action("delete")" method="post"><input type="hidden" name="id" value="@feed.Id" /><input type="submit" value="Delete" /></form></td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>
+        You currently have no subscriptions.
+    </p>
+}
+
 
 @section Scripts {
 <script type="text/javascript">
