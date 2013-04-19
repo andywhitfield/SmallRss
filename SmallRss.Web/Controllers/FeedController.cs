@@ -39,9 +39,9 @@ namespace SmallRss.Web.Controllers
         }
 
         // GET api/feed/5
-        public IEnumerable<object> Get(int id)
+        public IEnumerable<object> Get(int id, int? offset)
         {
-            Trace.TraceInformation("Getting articles for feed {0} from db", id);
+            Trace.TraceInformation("Getting articles for feed {0} from db, using client UTC offset {1}", id, offset);
 
             var loggedInUser = this.CurrentUser(datastore);
             var feed = datastore.Load<UserFeed>(id);
@@ -59,10 +59,10 @@ namespace SmallRss.Web.Controllers
 
             return articles
                 .OrderBy(a => a.Published)
-                .Select(a => new { read = readArticles.Any(uar => uar.ArticleId == a.Id), feed = id, story = a.Id, heading = a.Heading, article = Preview(a.Body), posted = Date(a.Published) });
+                .Select(a => new { read = readArticles.Any(uar => uar.ArticleId == a.Id), feed = id, story = a.Id, heading = a.Heading, article = Preview(a.Body), posted = Date(a.Published, offset) });
         }
 
-        private string Date(DateTime? articleDate)
+        private string Date(DateTime? articleDate, int? utcOffset)
         {
             var format = "dd-MMM-yyyy HH:mm";
 
@@ -77,6 +77,9 @@ namespace SmallRss.Web.Controllers
                 format = "ddd HH:mm";
             else if (age < TimeSpan.FromDays(100))
                 format = "dd-MMM HH:mm";
+
+            if (utcOffset.HasValue)
+                articleDate = articleDate.Value.AddMinutes(-utcOffset.Value);
 
             return articleDate.Value.ToString(format);
         }

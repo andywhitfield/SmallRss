@@ -83,6 +83,10 @@ function updateUnreadCounts() {
     });
 }
 
+function getUtcOffset() {
+    return new Date().getTimezoneOffset();
+}
+
 $(function () {
     var app = $.sammy(function () {
         this.get('#/', function () {
@@ -129,7 +133,7 @@ $(function () {
             $("#articleGrid").jqGrid('clearGridData');
             console.log('loading articles for ' + this.params['feed']);
 
-            $("#articleGrid").jqGrid('setGridParam', { url: urls.feed_api + '/' + this.params['feed'], datatype: 'json' });
+            $("#articleGrid").jqGrid('setGridParam', { url: urls.feed_api + '/' + this.params['feed'] + '?offset=' + getUtcOffset(), datatype: 'json' });
             $("#articleGrid").trigger('reloadGrid');
         });
     });
