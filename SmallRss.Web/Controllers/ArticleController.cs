@@ -1,6 +1,6 @@
-﻿using SmallRss.Data.Models;
+﻿using log4net;
+using SmallRss.Data.Models;
 using SmallRss.Web.Models;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -10,6 +10,8 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class ArticleController : ApiController
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(ArticleController));
+
         private readonly IDatastore datastore;
 
         public ArticleController(IDatastore datastore)
@@ -27,7 +29,7 @@ namespace SmallRss.Web.Controllers
         // POST api/article
         public void Post(ArticleReadViewModel feed)
         {
-            Trace.TraceInformation("Marking story as {1}: {0}", feed.Story, feed.Read ? "read" : "unread");
+            log.DebugFormat("Marking story as {1}: {0}", feed.Story, feed.Read ? "read" : "unread");
             var user = this.CurrentUser(datastore);
             if (feed.Feed.HasValue && !feed.Story.HasValue)
             {
@@ -48,7 +50,7 @@ namespace SmallRss.Web.Controllers
                 }
                 else
                 {
-                    Trace.TraceWarning("Feed {0} could not be found or is not associated with the current user, will not make any changes", feed.Feed);
+                    log.WarnFormat("Feed {0} could not be found or is not associated with the current user, will not make any changes", feed.Feed);
                 }
             }
         }

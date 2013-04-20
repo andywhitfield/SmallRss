@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Diagnostics;
 using System.Timers;
 
@@ -6,6 +7,8 @@ namespace SmallRss.Service
 {
     public class RssServices
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(RssServices));
+
         private Timer refreshTimer;
         private RefreshFeeds refreshFeeds;
 
@@ -38,11 +41,11 @@ namespace SmallRss.Service
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Error refreshing feeds: {0}", ex);
+                log.Error("Error refreshing feeds: ", ex);
             }
             finally
             {
-                Trace.TraceInformation("Done refresh, will run again in " + interval);
+                log.InfoFormat("Done refresh, will run again in {0}", interval);
                 refreshTimer.Start();
             }
         }

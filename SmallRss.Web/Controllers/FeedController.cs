@@ -1,8 +1,8 @@
 ﻿using HtmlAgilityPack;
+using log4net;
 using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web.Http;
@@ -12,6 +12,8 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class FeedController : ApiController
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(FeedController));
+
         private readonly IDatastore datastore;
 
         public FeedController(IDatastore datastore)
@@ -22,7 +24,7 @@ namespace SmallRss.Web.Controllers
         // GET api/feed
         public IEnumerable<object> Get()
         {
-            Trace.WriteLine("Getting all feeds from db");
+            log.Debug("Getting all feeds from db");
             
             var loggedInUser = this.CurrentUser(datastore);
             var userFeeds = datastore.Load<UserFeed>("UserAccountId", loggedInUser.Id);
@@ -41,7 +43,7 @@ namespace SmallRss.Web.Controllers
         // GET api/feed/5
         public IEnumerable<object> Get(int id, int? offset)
         {
-            Trace.TraceInformation("Getting articles for feed {0} from db, using client UTC offset {1}", id, offset);
+            log.DebugFormat("Getting articles for feed {0} from db, using client UTC offset {1}", id, offset);
 
             var loggedInUser = this.CurrentUser(datastore);
             var feed = datastore.Load<UserFeed>(id);

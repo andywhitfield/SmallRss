@@ -1,4 +1,8 @@
-﻿body, p, div, span, a {
+﻿body {
+    margin-top: 0;
+}
+
+body, p, div, span, a {
     font-family: Verdana, Georgia, sans-serif;
     font-size: 10pt;
 }
@@ -14,25 +18,28 @@ input {
     margin: 0 0 8px 0;
 }
 
-header h1 {
-    display: inline;
-    line-height: 0;
+header img {
+    float: left;
+    margin: 3px 4px 0 0;
+    border: 0;
 }
-header h1 a {
-    text-decoration: none;
-    font-size: 15pt;
-    font-weight: bold;
+
+header h1 {
+    float: left;
+    margin: 0 0 10px 0;
 }
 header span.manage {
-    text-align: right;
-    display: block;
-    position: relative;
-    top: -18px;
+    float: right;
+    margin-top: 6px;
+}
+
+article {
+    clear: both;
 }
 
 #mainPanel {
     position: absolute;
-    top: 30px;
+    top: 35px;
     left: 5px;
     right: 5px;
     bottom: 5px;

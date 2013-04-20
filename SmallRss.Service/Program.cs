@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using log4net.Config;
+using Ninject;
 using Topshelf;
 
 namespace SmallRss.Service
@@ -7,6 +8,7 @@ namespace SmallRss.Service
     {
         static void Main(string[] args)
         {
+            XmlConfigurator.Configure();
             var ninject = new NinjectConfig();
 
             HostFactory.Run(h =>

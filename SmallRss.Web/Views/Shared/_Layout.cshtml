@@ -2,8 +2,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
         <title>SmallRss</title>
-        <meta name="viewport" content="width=device-width" />
         <script type="text/javascript">
             var urls = {
                 feedstatus_api: '@Url.Action("feedstatus", "api")',
@@ -17,12 +17,14 @@
     </head>
     <body>
         <header>
-            <h1><a href="@Url.Action("", "")">SmallRss</a></h1>
+            <a href="@Url.Action("", "")"><img src="@Url.Content("~/resource/image/smallrss.png")" width="28" height="28" alt="SmallRss" /><h1>SmallRss</h1></a>
             @if (User != null && User.Identity.IsAuthenticated) {
-            <span class="manage"><a href="@Url.Action("", "manage")">Manage feeds</a></span>
+            <span class="manage"><a href="@Url.Action("", "manage")">Manage feeds</a> | <a href="@Url.Action("logout", "home")">Logout</a></span>
             }
         </header>
+        <article>
         @RenderBody()
+        </article>
         @RenderSection("scripts", required: false)
     </body>
 </html>

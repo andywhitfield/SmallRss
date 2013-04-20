@@ -1,4 +1,5 @@
-﻿using PetaPoco.Internal;
+﻿using log4net;
+using PetaPoco.Internal;
 using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace SmallRss.Data
 {
     public class PetaPocoDatastore : IDatastore
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(PetaPocoDatastore));
+
         private readonly PetaPoco.Database db;
 
         public PetaPocoDatastore(PetaPoco.Database db)
@@ -19,6 +22,8 @@ namespace SmallRss.Data
 
         public void UpdateAccount(UserAccount userAccount)
         {
+            log.InfoFormat("Updating account: ", userAccount.Id);
+
             var userAccountSettings =
                 userAccount.AuthenticationIds.Select(a => new UserAccountSetting
                 {
@@ -65,10 +70,12 @@ namespace SmallRss.Data
 
             if (accountAuth != null)
             {
+                log.DebugFormat("Found existing account with auth id {0}: {1}", authenticationId, accountAuth.UserAccountId);
                 return LoadUserAccount(accountAuth.UserAccountId);
             }
             else
             {
+                log.InfoFormat("No account found with auth id {0} - creating a new account.", authenticationId);
                 var account = new UserAccount { LastLogin = DateTime.UtcNow };
                 account.AuthenticationIds.Add(authenticationId);
                 using (var txn = db.GetTransaction())

@@ -1,6 +1,6 @@
-﻿using SmallRss.Data.Models;
+﻿using log4net;
+using SmallRss.Data.Models;
 using SmallRss.Web.Models.Manage;
-using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -9,6 +9,8 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(ManageController));
+
         private readonly IDatastore datastore;
 
         public ManageController(IDatastore datastore)
@@ -48,7 +50,7 @@ namespace SmallRss.Web.Controllers
                 return RedirectToAction("index");
 
             var removeCount = datastore.Remove(feed);
-            Trace.TraceInformation("Removed {0} feed: {1}:{2}", removeCount, feed.Id, feed.Name);
+            log.InfoFormat("Removed {0} feed: {1}:{2}", removeCount, feed.Id, feed.Name);
 
             return RedirectToAction("index");
         }
@@ -67,6 +69,7 @@ namespace SmallRss.Web.Controllers
             if (rss == null)
             {
                 rss = datastore.Store(new RssFeed { Uri = addFeed.Url });
+                log.InfoFormat("Created new RSS feed: {0}", addFeed.Url);
             }
 
             var newFeed = new UserFeed {
@@ -76,6 +79,8 @@ namespace SmallRss.Web.Controllers
                 UserAccountId = user.Id
             };
             datastore.Store(newFeed);
+
+            log.InfoFormat("Created new user feed: {0} - {1}", addFeed.Name, addFeed.Url);
 
             return RedirectToAction("index");
         }
@@ -94,6 +99,7 @@ namespace SmallRss.Web.Controllers
             if (rss == null)
             {
                 rss = datastore.Store(new RssFeed { Uri = saveFeed.Url });
+                log.InfoFormat("Updating user feed, created new rss: {0}", saveFeed.Url);
             }
 
             var feed = datastore.Load<UserFeed>(saveFeed.Id);
@@ -104,6 +110,8 @@ namespace SmallRss.Web.Controllers
             feed.Name = saveFeed.Name;
             feed.RssFeedId = rss.Id;
             datastore.Update(feed);
+
+            log.InfoFormat("Updating user feed: {0}", saveFeed.Name);
 
             return RedirectToAction("index");
         }

@@ -1,10 +1,10 @@
 ﻿using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
 using DotNetOpenAuth.OpenId.RelyingParty;
+using log4net;
 using SmallRss.Web.Models;
 using SmallRss.Web.Models.Home;
 using System;
-using System.Diagnostics;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -12,7 +12,9 @@ namespace SmallRss.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(HomeController));
         private static OpenIdRelyingParty openid = new OpenIdRelyingParty();
+
         private readonly IDatastore datastore;
 
         public HomeController(IDatastore datastore)
@@ -57,13 +59,13 @@ namespace SmallRss.Web.Controllers
                 "X-XRDS-Location",
                 new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
-            Trace.TraceInformation("Attempting to authenticate");
+            log.Debug("Attempting to authenticate");
 
             var response = openid.GetResponse();
             if (response == null)
             {
                 var openIdIdentifier = Request.Form["openid"];
-                Trace.TraceInformation("Logging in user [{0}] via open ip provider: ", openIdIdentifier);
+                log.InfoFormat("Logging in user [{0}] via open ip provider: ", openIdIdentifier);
 
                 // Stage 2: user submitting Identifier
                 Identifier id;
@@ -89,17 +91,17 @@ namespace SmallRss.Web.Controllers
             }
             else
             {
-                Trace.TraceInformation("Got response from OpenID provider - status: {0}", response.Status);
+                log.DebugFormat("Got response from OpenID provider - status: {0}", response.Status);
 
                 // Stage 3: OpenID Provider sending assertion response
                 switch (response.Status)
                 {
                     case AuthenticationStatus.Authenticated:
                         string openIdIdentifier = response.ClaimedIdentifier;
-                        Trace.TraceInformation("Authenticated: {0}", openIdIdentifier);
+                        log.DebugFormat("Authenticated: {0}", openIdIdentifier);
 
                         var account = datastore.GetOrCreateAccount(openIdIdentifier);
-                        Trace.TraceInformation("Created/loaded user account: {0} - {1}", openIdIdentifier, account.Id);
+                        log.InfoFormat("Created/loaded user account: {0} - {1}", openIdIdentifier, account.Id);
 
                         FormsAuthentication.SetAuthCookie(openIdIdentifier, true);
                         if (!string.IsNullOrEmpty(returnUrl))
@@ -117,6 +119,13 @@ namespace SmallRss.Web.Controllers
                 }
             }
             return new EmptyResult();
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            Session.Abandon();
+            return RedirectToAction("login");
         }
     }
 }

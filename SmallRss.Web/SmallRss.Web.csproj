@@ -248,6 +248,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="error.html" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\FTP to EC2.pubxml" />
     <Content Include="resource\css\aciTree.css" />
@@ -272,6 +274,7 @@
     <Content Include="resource\css\ui.jqgrid.css" />
     <Content Include="resource\image\load-node.gif" />
     <Content Include="resource\image\load-root.gif" />
+    <Content Include="resource\image\smallrss.png" />
     <Content Include="resource\image\tree-branch-rtl.png" />
     <Content Include="resource\image\tree-no-branches-rtl.png" />
     <Content Include="resource\image\tree-no-branches.png" />

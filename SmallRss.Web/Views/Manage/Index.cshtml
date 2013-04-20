@@ -12,7 +12,7 @@
                 }
             </select>
         }
-        <input type="text" name="group" />
+        <input type="text" id="group" name="group" />
         
         <br />
         <label for="url">Feed URL:</label>
@@ -60,6 +60,11 @@ else
                     //alert(result.error);
                 }
             });
+        });
+        $('#groupSel').change(function () {
+            var newGroup = $('#group');
+            if ($(this).val() == "") newGroup.show();
+            else newGroup.hide();
         });
     });
 </script>
