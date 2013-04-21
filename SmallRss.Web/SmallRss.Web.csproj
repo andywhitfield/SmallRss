@@ -272,8 +272,11 @@
     <Content Include="resource\css\jquery.splitter.css" />
     <Content Include="resource\css\smallrss.css" />
     <Content Include="resource\css\ui.jqgrid.css" />
+    <Content Include="resource\image\google.ico.png" />
     <Content Include="resource\image\load-node.gif" />
     <Content Include="resource\image\load-root.gif" />
+    <Content Include="resource\image\myopenid.ico.png" />
+    <Content Include="resource\image\openid.ico.png" />
     <Content Include="resource\image\smallrss.png" />
     <Content Include="resource\image\tree-branch-rtl.png" />
     <Content Include="resource\image\tree-no-branches-rtl.png" />

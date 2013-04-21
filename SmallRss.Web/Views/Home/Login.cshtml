@@ -2,23 +2,26 @@
 <h2>Log In</h2>
 
 @if (!string.IsNullOrWhiteSpace(Model.Message)) {
-    <strong>@Model.Message</strong>
+    <p>
+    <div class="error">@Model.Message</div>
+    </p>
 }
 
 <form id="loginform" action="@Url.Action("login")" method="post">
-    <input type="button" name="loginWithGoogle" value="Google" title="Login using your Google account" data-url="https://www.google.com/accounts/o8/id" />
-    <input type="button" name="loginWithMyOpenID" value="MyOpenID" title="Login using your MyOpenID account" data-url="https://www.myopenid.com/" />
+    Login using your Google or MyOpenID account, or enter your own OpenID URL.
+    <p>
+    <input type="button" class="openid openidGoogle" name="loginWithGoogle" value="    Google" title="Login using your Google account" data-url="https://www.google.com/accounts/o8/id" />
+    <input type="button" class="openid openidMyopenid" name="loginWithMyOpenID" value="    MyOpenID" title="Login using your MyOpenID account" data-url="https://www.myopenid.com/" />
+    </p>
 
     <p>
-    <label for="openid">Custom OpenID URL: </label> <input type="text" id="openid" name="openid" /> <input type="submit" value="Login using this OpenID" />
+    <label for="openid">Your own OpenID: </label><input type="text" id="openid" name="openid" /> <input type="submit" class="openid openidCustom" value="    Login using this OpenID" />
     </p>
 </form>
 
 @section Scripts {
 <script type="text/javascript">
     $(function () {
-        $('#openid').focus();
-
         $('input[data-url]').click(function () {
             $('#openid').val($(this).attr('data-url'));
             $('#loginform').submit();

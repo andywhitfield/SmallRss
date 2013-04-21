@@ -51,6 +51,12 @@ article {
     font-weight: bold;
 }
 
+.error {
+    font-weight: bold;
+    font-size: 11pt;
+    color: #f00;
+}
+
 .articleLink {
     font-weight: bold;
     font-size: 13pt;
@@ -60,4 +66,24 @@ article {
     margin-top: 10px;
     padding-top: 6px;
     border-top: 1px dotted #000;
+}
+
+.openid {
+    background-repeat: no-repeat; background-position: left;
+    border: 1px solid black;
+    padding: 3px 6px 3px 6px;
+}
+.openidGoogle {
+    background-image: url(../image/google.ico.png); 
+}
+.openidMyopenid {
+    background-image: url(../image/myopenid.ico.png);
+}
+.openidCustom {
+    background-image: url(../image/openid.ico.png);
+}
+
+.manageForm label {
+    float: left;
+    width: 100px;
 }

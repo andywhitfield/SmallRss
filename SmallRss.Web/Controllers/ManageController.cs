@@ -58,12 +58,13 @@ namespace SmallRss.Web.Controllers
         [HttpPost]
         public ActionResult Add(AddFeedViewModel addFeed)
         {
+            var user = this.CurrentUser(datastore);
+            var feeds = datastore.LoadUserRssFeeds(user.Id);
+
             if (!ModelState.IsValid || (string.IsNullOrWhiteSpace(addFeed.GroupSel) && string.IsNullOrWhiteSpace(addFeed.Group)))
             {
-                return RedirectToAction("index");
+                return View("Index", new IndexViewModel { Error = "Missing feed URL, group or name. Please complete all fields and try again.", Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) });
             }
-
-            var user = this.CurrentUser(datastore);
 
             var rss = datastore.Load<RssFeed>("Uri", addFeed.Url).FirstOrDefault();
             if (rss == null)
