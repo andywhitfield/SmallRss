@@ -87,3 +87,6 @@ article {
     float: left;
     width: 100px;
 }
+tr.manage {
+    vertical-align: top;
+}

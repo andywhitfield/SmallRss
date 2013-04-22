@@ -20,23 +20,16 @@ namespace SmallRss.Web.Controllers
 
         public ActionResult Index()
         {
-            var user = this.CurrentUser(datastore);
-            var feeds = datastore.LoadUserRssFeeds(user.Id);
-
-            return View(new IndexViewModel { Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) });
+            return View(CreateIndexViewModel(this.CurrentUser(datastore)));
         }
 
         public ActionResult Edit(int id)
         {
-            var user = this.CurrentUser(datastore);
-
-            var feeds = datastore.Load<UserFeed>("UserAccountId", user.Id);
-            var feed = feeds.FirstOrDefault(f => f.Id == id);
-            if (feed == null)
+            var vm = CreateEditViewModel(this.CurrentUser(datastore), id);
+            if (vm == null)
                 return RedirectToAction("index");
 
-            var rss = datastore.Load<RssFeed>(feed.RssFeedId);
-            return View(new EditViewModel { Feed = new FeedSubscriptionViewModel(feed, rss), CurrentGroups = feeds.Select(f => f.GroupName).Distinct().OrderBy(g => g) });
+            return View(vm);
         }
 
         [HttpPost]
@@ -49,7 +42,10 @@ namespace SmallRss.Web.Controllers
             if (feed == null)
                 return RedirectToAction("index");
 
-            var removeCount = datastore.Remove(feed);
+            var removeCount = datastore.RemoveUserArticleRead(user, feed);
+            log.InfoFormat("Removed {0} user article read records: {1}:{2}", removeCount, feed.Id, feed.Name);
+
+            removeCount = datastore.Remove(feed);
             log.InfoFormat("Removed {0} feed: {1}:{2}", removeCount, feed.Id, feed.Name);
 
             return RedirectToAction("index");
@@ -59,11 +55,12 @@ namespace SmallRss.Web.Controllers
         public ActionResult Add(AddFeedViewModel addFeed)
         {
             var user = this.CurrentUser(datastore);
-            var feeds = datastore.LoadUserRssFeeds(user.Id);
 
             if (!ModelState.IsValid || (string.IsNullOrWhiteSpace(addFeed.GroupSel) && string.IsNullOrWhiteSpace(addFeed.Group)))
             {
-                return View("Index", new IndexViewModel { Error = "Missing feed URL, group or name. Please complete all fields and try again.", Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) });
+                var vm = CreateIndexViewModel(user);
+                vm.Error = "Missing feed URL, group or name. Please complete all fields and try again.";
+                return View("Index", vm);
             }
 
             var rss = datastore.Load<RssFeed>("Uri", addFeed.Url).FirstOrDefault();
@@ -74,7 +71,7 @@ namespace SmallRss.Web.Controllers
             }
 
             var newFeed = new UserFeed {
-                GroupName = string.IsNullOrWhiteSpace(addFeed.Group) ? addFeed.GroupSel : addFeed.Group,
+                GroupName = string.IsNullOrWhiteSpace(addFeed.GroupSel) ? addFeed.Group : addFeed.GroupSel,
                 Name = addFeed.Name,
                 RssFeedId = rss.Id,
                 UserAccountId = user.Id
@@ -89,12 +86,16 @@ namespace SmallRss.Web.Controllers
         [HttpPost]
         public ActionResult Save(SaveFeedViewModel saveFeed)
         {
+            var user = this.CurrentUser(datastore);
             if (!ModelState.IsValid || (string.IsNullOrWhiteSpace(saveFeed.GroupSel) && string.IsNullOrWhiteSpace(saveFeed.Group)))
             {
-                return RedirectToAction("index");
-            }
+                var vm = CreateEditViewModel(user, saveFeed.Id);
+                if (vm == null)
+                    return RedirectToAction("index");
 
-            var user = this.CurrentUser(datastore);
+                vm.Error = "Could not update feed due to a missing feed URL, group or name. Please complete all fields and try again.";
+                return View("Edit", vm);
+            }
 
             var rss = datastore.Load<RssFeed>("Uri", saveFeed.Url).FirstOrDefault();
             if (rss == null)
@@ -105,9 +106,16 @@ namespace SmallRss.Web.Controllers
 
             var feed = datastore.Load<UserFeed>(saveFeed.Id);
             if (feed == null || feed.UserAccountId != user.Id)
-                return RedirectToAction("index");
+            {
+                var vm = CreateEditViewModel(user, saveFeed.Id);
+                if (vm == null)
+                    return RedirectToAction("index");
 
-            feed.GroupName = string.IsNullOrWhiteSpace(saveFeed.Group) ? saveFeed.GroupSel : saveFeed.Group;
+                vm.Error = "Could not update feed due to a security check failure. Please try again";
+                return View("Edit", vm);
+            }
+
+            feed.GroupName = string.IsNullOrWhiteSpace(saveFeed.GroupSel) ? saveFeed.Group : saveFeed.GroupSel;
             feed.Name = saveFeed.Name;
             feed.RssFeedId = rss.Id;
             datastore.Update(feed);
@@ -115,6 +123,23 @@ namespace SmallRss.Web.Controllers
             log.InfoFormat("Updating user feed: {0}", saveFeed.Name);
 
             return RedirectToAction("index");
+        }
+
+        private IndexViewModel CreateIndexViewModel(UserAccount user)
+        {
+            var feeds = datastore.LoadUserRssFeeds(user.Id);
+            return new IndexViewModel { Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) };
+        }
+
+        private EditViewModel CreateEditViewModel(UserAccount user, int feedId)
+        {
+            var feeds = datastore.Load<UserFeed>("UserAccountId", user.Id);
+            var feed = feeds.FirstOrDefault(f => f.Id == feedId);
+            if (feed == null)
+                return null;
+
+            var rss = datastore.Load<RssFeed>(feed.RssFeedId);
+            return new EditViewModel { Feed = new FeedSubscriptionViewModel(feed, rss), CurrentGroups = feeds.Select(f => f.GroupName).Distinct().OrderBy(g => g) };
         }
     }
 }

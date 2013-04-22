@@ -1,8 +1,9 @@
 ﻿@model SmallRss.Web.Models.Manage.EditViewModel
 <h2>Edit Feed</h2>
+<p class="error" id="errorMessage">@Model.Error</p>
 <form method="post" action="@Url.Action("save")">
     <input type="hidden" name="id" value="@Model.Feed.Id" />
-    <p>
+    <div class="manageForm">
         <label for="groupSel">Group:</label>
         @if (Model.CurrentGroups.Any())
         {
@@ -13,18 +14,40 @@
                 }
             </select>
         }
-        <input type="text" name="group" value="@Model.Feed.Group" />
-        
-        <br />
+        <input type="text" id="group" name="group" value="@Model.Feed.Group" />
+    </div>
+    <div class="manageForm">
         <label for="url">Feed URL:</label>
         <input type="url" id="url" name="url" value="@Model.Feed.Url" />
-
-        <br />
+    </div>
+    <div class="manageForm">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="@Model.Feed.Name" />
-
-        <p>
-            <input type="submit" value="Update" />
-        </p>
-    </p>
+        <input type="text" id="name" name="name" value="@Model.Feed.Name" />  <input id="fillNameFromFeed" type="button" value="Fill from feed" />
+    </div>
+    <div class="manageForm">
+        <input type="submit" value="Update" />
+    </div>
 </form>
+
+@section Scripts {
+<script type="text/javascript">
+    $(function () {
+        $('#fillNameFromFeed').click(function () {
+            $.get('@Url.Action("rss", "api")', { url: $('#url').val() }, function (result) {
+                if (result.title != null) {
+                    $('#name').val(result.title);
+                } else {
+                    $('#errorMessage').text(result.error);
+                }
+            });
+        });
+        var groupChange = function () {
+            var newGroup = $('#group');
+            if ($(this).val() == "") newGroup.css('visibility', 'visible');
+            else newGroup.css('visibility', 'hidden');
+        };
+        $('#groupSel').change(groupChange);
+        $('#groupSel').trigger('change');
+    });
+</script>
+}

@@ -196,6 +196,14 @@ and uar.Id is null", feed.RssFeedId, feed.UserAccountId);
                 userArticleRead.ArticleId);
         }
 
+        public int RemoveUserArticleRead(UserAccount user, UserFeed feed)
+        {
+            return db.Delete<UserArticlesRead>(
+                "where UserAccountId = @0 and UserFeedId = @1",
+                user.Id,
+                feed.Id);
+        }
+
         public T Store<T>(T entity)
         {
             db.Insert(entity);

@@ -24,6 +24,7 @@ namespace SmallRss
         IEnumerable<Article> LoadUnreadArticlesInUserFeed(UserFeed feed);
         IEnumerable<UnreadArticleCountPerFeed> GetUnreadFeeds(int userAccountId);
         int RemoveUserArticleRead(UserArticlesRead userArticleRead);
+        int RemoveUserArticleRead(UserAccount user, UserFeed feed);
 
         T Load<T>(object primaryKey);
         IEnumerable<T> Load<T>(string foreignKeyColumn, object foreignKeyValue);
