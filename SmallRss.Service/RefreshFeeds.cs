@@ -25,7 +25,7 @@ namespace SmallRss.Service
             log.Debug("Refreshing all RSS feeds...");
             try
             {
-                IEnumerable<RssFeed> allRssFeeds = datastore.Load<RssFeed>("1", 1).ToList();
+                IEnumerable<RssFeed> allRssFeeds = datastore.LoadAll<RssFeed>("1", 1).ToList();
                 int refreshed = 0;
 
                 foreach (var rssFeed in allRssFeeds)
@@ -70,7 +70,7 @@ namespace SmallRss.Service
         {
             log.Debug("There are new items, updating...");
 
-            var existing = datastore.Load<Article>("RssFeedId", rssFeed.Id).ToList();
+            var existing = datastore.LoadAll<Article>("RssFeedId", rssFeed.Id).ToList();
             foreach (var itemInFeed in feed.Items)
             {
                 var existingArticle = existing.FirstOrDefault(e => e.ArticleGuid == itemInFeed.Id);

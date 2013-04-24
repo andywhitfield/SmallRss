@@ -27,7 +27,8 @@ namespace SmallRss
         int RemoveUserArticleRead(UserAccount user, UserFeed feed);
 
         T Load<T>(object primaryKey);
-        IEnumerable<T> Load<T>(string foreignKeyColumn, object foreignKeyValue);
+        IEnumerable<T> LoadAll<T>(string foreignKeyColumn, object foreignKeyValue);
+        IEnumerable<T> LoadAll<T>(params Tuple<string, object>[] foreignKeyColumnValues);
 
         T Store<T>(T entity);
         T Update<T>(T entity);

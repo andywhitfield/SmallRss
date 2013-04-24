@@ -1,6 +1,7 @@
 ﻿using log4net;
 using SmallRss.Data.Models;
 using SmallRss.Web.Models;
+using System;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -43,7 +44,7 @@ namespace SmallRss.Web.Controllers
             else if (feed.Story.HasValue)
             {
                 var article = datastore.Load<Article>(feed.Story.Value);
-                var feedToMarkAsRead = datastore.Load<UserFeed>("RssFeedId", article.RssFeedId).FirstOrDefault();
+                var feedToMarkAsRead = datastore.LoadAll<UserFeed>(Tuple.Create("RssFeedId", (object)article.RssFeedId), Tuple.Create("UserAccountId", (object)user.Id)).FirstOrDefault();
                 if (feedToMarkAsRead != null && feedToMarkAsRead.UserAccountId == user.Id)
                 {
                     MarkAsRead(feedToMarkAsRead, article.Id, feed.Read);

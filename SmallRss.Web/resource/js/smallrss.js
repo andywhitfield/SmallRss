@@ -154,7 +154,8 @@ $(function () {
             case 'init':
                 model.treeApi = api;
                 model.loadingFeeds(false);
-                model.anyFeeds(api.first(null) != null);
+                var firstNode = api.first(null);
+                model.anyFeeds(firstNode != null && firstNode.text() != "");
 
                 // set the current node selected if applicable - i.e. when F5'ing the page
                 if (model.isFeedSelected()) {

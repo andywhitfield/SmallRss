@@ -36,7 +36,7 @@ namespace SmallRss.Web.Controllers
         public ActionResult Delete(int id)
         {
             var user = this.CurrentUser(datastore);
-            var feeds = datastore.Load<UserFeed>("UserAccountId", user.Id);
+            var feeds = datastore.LoadAll<UserFeed>("UserAccountId", user.Id);
 
             var feed = feeds.FirstOrDefault(f => f.Id == id);
             if (feed == null)
@@ -63,7 +63,7 @@ namespace SmallRss.Web.Controllers
                 return View("Index", vm);
             }
 
-            var rss = datastore.Load<RssFeed>("Uri", addFeed.Url).FirstOrDefault();
+            var rss = datastore.LoadAll<RssFeed>("Uri", addFeed.Url).FirstOrDefault();
             if (rss == null)
             {
                 rss = datastore.Store(new RssFeed { Uri = addFeed.Url });
@@ -97,7 +97,7 @@ namespace SmallRss.Web.Controllers
                 return View("Edit", vm);
             }
 
-            var rss = datastore.Load<RssFeed>("Uri", saveFeed.Url).FirstOrDefault();
+            var rss = datastore.LoadAll<RssFeed>("Uri", saveFeed.Url).FirstOrDefault();
             if (rss == null)
             {
                 rss = datastore.Store(new RssFeed { Uri = saveFeed.Url });
@@ -133,7 +133,7 @@ namespace SmallRss.Web.Controllers
 
         private EditViewModel CreateEditViewModel(UserAccount user, int feedId)
         {
-            var feeds = datastore.Load<UserFeed>("UserAccountId", user.Id);
+            var feeds = datastore.LoadAll<UserFeed>("UserAccountId", user.Id);
             var feed = feeds.FirstOrDefault(f => f.Id == feedId);
             if (feed == null)
                 return null;

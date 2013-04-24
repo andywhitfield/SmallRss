@@ -111,9 +111,18 @@ namespace SmallRss.Data
             return account;
         }
 
-        public IEnumerable<T> Load<T>(string foreignKeyColumn, object foreignKeyValue)
+        public IEnumerable<T> LoadAll<T>(string foreignKeyColumn, object foreignKeyValue)
         {
             return db.Query<T>("where " + foreignKeyColumn + " = @0", foreignKeyValue);
+        }
+
+        public IEnumerable<T> LoadAll<T>(params Tuple<string, object>[] foreignKeyColumnValues)
+        {
+            var sql = PetaPoco.Sql.Builder;
+            foreach (var colVal in foreignKeyColumnValues)
+                sql.Where(colVal.Item1 + " = @0", colVal.Item2);
+
+            return db.Query<T>(sql);
         }
 
         public T Load<T>(object primaryKey)
@@ -167,7 +176,7 @@ from UserAccount ua
 join UserFeed uf on ua.Id = uf.UserAccountId
 join RssFeed rf on rf.Id = uf.RssFeedId
 left join Article a on rf.Id = a.RssFeedId
-left join UserArticlesRead uar on uar.ArticleId = a.Id
+left join UserArticlesRead uar on uar.ArticleId = a.Id and uar.UserFeedId = uf.Id and uar.UserAccountId = ua.Id
 where uar.Id is null
 and ua.Id = @0
 group by uf.Id, uf.GroupName", userAccountId);

@@ -27,7 +27,10 @@ namespace SmallRss.Web.Controllers
             log.Debug("Getting all feeds from db");
             
             var loggedInUser = this.CurrentUser(datastore);
-            var userFeeds = datastore.Load<UserFeed>("UserAccountId", loggedInUser.Id);
+            var userFeeds = datastore.LoadAll<UserFeed>("UserAccountId", loggedInUser.Id);
+
+            if (!userFeeds.Any())
+                return new[] { new { id = "", item = "" } };
 
             return userFeeds.GroupBy(f => f.GroupName).OrderBy(g => g.Key).Select(group =>
                 new
@@ -47,12 +50,12 @@ namespace SmallRss.Web.Controllers
 
             var loggedInUser = this.CurrentUser(datastore);
             var feed = datastore.Load<UserFeed>(id);
-            var readArticles = datastore.Load<UserArticlesRead>("UserFeedId", feed.Id).ToList();
+            var readArticles = datastore.LoadAll<UserArticlesRead>("UserFeedId", feed.Id).ToList();
 
             IEnumerable<Article> articles;
             if (loggedInUser.ShowAllItems)
             {
-                articles = datastore.Load<Article>("RssFeedId", feed.RssFeedId);
+                articles = datastore.LoadAll<Article>("RssFeedId", feed.RssFeedId);
             }
             else
             {

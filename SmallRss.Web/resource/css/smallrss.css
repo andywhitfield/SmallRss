@@ -51,6 +51,10 @@ article {
     font-weight: bold;
 }
 
+.feedTreeAlt {
+    margin: 8px;
+}
+
 .error {
     font-weight: bold;
     font-size: 11pt;

@@ -2,8 +2,8 @@
 <section id="mainPanel">
 <div id="mainSplitter">
     <div id="splitWest">
-        <div id="feedTreeLoading" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
-        <div id="feedTreeNoSubscriptions" data-bind="visible: !loadingFeeds() && !anyFeeds()">You don't yet have any feed subscriptions - <a href="@Url.Action("", "manage")">add some</a>!</div>
+        <div id="feedTreeLoading" class="feedTreeAlt" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
+        <div id="feedTreeNoSubscriptions" class="feedTreeAlt" data-bind="visible: !loadingFeeds() && !anyFeeds()">You don't yet have any feed subscriptions - <a href="@Url.Action("", "manage")">add some</a>!</div>
         <div id="feedTree" class="aciTree" data-bind="visible: !loadingFeeds() && anyFeeds()"></div>
     </div>
     <div id="splitCenter">
