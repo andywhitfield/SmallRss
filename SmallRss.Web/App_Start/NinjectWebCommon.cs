@@ -10,6 +10,7 @@ namespace SmallRss.Web.App_Start
     using QDFeedParser.Xml;
     using SmallRss.Data;
     using SmallRss.Parsing;
+    using SmallRss.Web.ServiceApi;
     using System;
     using System.Web;
     using System.Web.Http;
@@ -64,6 +65,7 @@ namespace SmallRss.Web.App_Start
             kernel.Bind<IFeedFactory>().To<HttpFeedFactory>();
             kernel.Bind<PetaPoco.Database>().ToConstructor(c => new PetaPoco.Database("SmallRssDb"));
             kernel.Bind<IDatastore>().To<PetaPocoDatastore>();
+            kernel.Bind<SmallRssApi>().To<ServiceApiProxy.ServiceApi>();
         }
     }
 }

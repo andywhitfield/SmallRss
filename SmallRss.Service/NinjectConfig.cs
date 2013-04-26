@@ -3,6 +3,7 @@ using QDFeedParser;
 using QDFeedParser.Xml;
 using SmallRss.Data;
 using SmallRss.Parsing;
+using SmallRss.Service.Api;
 
 namespace SmallRss.Service
 {
@@ -32,7 +33,8 @@ namespace SmallRss.Service
             kernel.Bind<IFeedFactory>().To<HttpFeedFactory>();
             kernel.Bind<PetaPoco.Database>().ToConstructor(c => new PetaPoco.Database("SmallRssDb"));
             kernel.Bind<IDatastore>().To<PetaPocoDatastore>();
-            kernel.Bind<RefreshFeeds>().ToSelf();
+            kernel.Bind<RefreshFeeds>().ToSelf().InSingletonScope();
+            kernel.Bind<ISmallRssApi>().To<SmallRssApi>();
 
             return kernel;
         }

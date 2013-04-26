@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="e1450cbc-2a57-48bd-8e3c-9377701ae167" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8900/smallrss" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SmallRssApi.wsdl" MetadataType="Wsdl" ID="a43276dc-8dae-4ea9-86fa-cfc46ff2ea06" SourceId="1" SourceUrl="http://localhost:8900/smallrss?wsdl" />
+    <MetadataFile FileName="smallrss.xsd" MetadataType="Schema" ID="70e18088-7b2b-4bfb-ba2b-7d9ae3efa001" SourceId="1" SourceUrl="http://localhost:8900/smallrss?xsd=xsd0" />
+    <MetadataFile FileName="smallrss.wsdl" MetadataType="Wsdl" ID="96031867-b449-4366-8c05-2b9400d9200f" SourceId="1" SourceUrl="http://localhost:8900/smallrss?wsdl=wsdl0" />
+    <MetadataFile FileName="smallrss.disco" MetadataType="Disco" ID="a25af1b9-672a-42ee-acd5-cc84745f7206" SourceId="1" SourceUrl="http://localhost:8900/smallrss?disco" />
+    <MetadataFile FileName="smallrss1.xsd" MetadataType="Schema" ID="2eab2eaa-1342-4012-930e-b3d881c4f93e" SourceId="1" SourceUrl="http://localhost:8900/smallrss?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

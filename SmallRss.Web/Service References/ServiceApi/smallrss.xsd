@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://smallrss" elementFormDefault="qualified" targetNamespace="http://smallrss" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="RefreshAllFeeds">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="userAccountId" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RefreshAllFeedsResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RefreshFeed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="userAccountId" type="xs:int" />
+        <xs:element minOccurs="0" name="feedId" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RefreshFeedResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

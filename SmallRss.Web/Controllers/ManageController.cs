@@ -1,6 +1,7 @@
 ﻿using log4net;
 using SmallRss.Data.Models;
 using SmallRss.Web.Models.Manage;
+using SmallRss.Web.ServiceApi;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -12,10 +13,12 @@ namespace SmallRss.Web.Controllers
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageController));
 
         private readonly IDatastore datastore;
+        private readonly SmallRssApi serviceApi;
 
-        public ManageController(IDatastore datastore)
+        public ManageController(IDatastore datastore, SmallRssApi serviceApi)
         {
             this.datastore = datastore;
+            this.serviceApi = serviceApi;
         }
 
         public ActionResult Index()
@@ -68,6 +71,7 @@ namespace SmallRss.Web.Controllers
             {
                 rss = datastore.Store(new RssFeed { Uri = addFeed.Url });
                 log.InfoFormat("Created new RSS feed: {0}", addFeed.Url);
+                serviceApi.RefreshFeed(user.Id, rss.Id);
             }
 
             var newFeed = new UserFeed {

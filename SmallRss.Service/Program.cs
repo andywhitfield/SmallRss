@@ -1,5 +1,6 @@
 ﻿using log4net.Config;
 using Ninject;
+using SmallRss.Service.Api;
 using Topshelf;
 
 namespace SmallRss.Service
@@ -15,7 +16,7 @@ namespace SmallRss.Service
             {
                 h.Service<RssServices>(s =>
                 {
-                    s.ConstructUsing(() => new RssServices(ninject.GetRegistry().Get<RefreshFeeds>()));
+                    s.ConstructUsing(() => new RssServices(ninject.GetRegistry().Get<RefreshFeeds>(), ninject.GetRegistry().Get<SmallRssApi>()));
                     s.WhenStarted(rs => rs.Start());
                     s.WhenStopped(rs => rs.Stop());
                 });

@@ -140,6 +140,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -227,6 +229,12 @@
     <Compile Include="Controllers\UserLayoutController.cs" />
     <Compile Include="Models\Home\LoginViewModel.cs" />
     <Compile Include="Models\UserLayoutViewModel.cs" />
+    <Compile Include="Service References\ServiceApi\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceApiProxy\ServiceApi.cs" />
     <Compile Include="Views\Home\xrds.aspx.cs">
       <DependentUpon>xrds.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -301,6 +309,13 @@
     <Content Include="resource\js\sammy-0.7.4.js" />
     <Content Include="resource\js\sammy-0.7.4.min.js" />
     <Content Include="resource\js\smallrss.js" />
+    <None Include="Service References\ServiceApi\smallrss.disco" />
+    <None Include="Service References\ServiceApi\configuration91.svcinfo" />
+    <None Include="Service References\ServiceApi\configuration.svcinfo" />
+    <None Include="Service References\ServiceApi\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="Views\Home\xrds.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -319,8 +334,18 @@
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Manage\Edit.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <None Include="Service References\ServiceApi\smallrss.wsdl" />
+    <None Include="Service References\ServiceApi\smallrss.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceApi\smallrss1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceApi\SmallRssApi.wsdl" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
@@ -332,6 +357,9 @@
       <Project>{3d657f64-d3b2-4c8e-a51d-44331e49b843}</Project>
       <Name>SmallRss</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceApi\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

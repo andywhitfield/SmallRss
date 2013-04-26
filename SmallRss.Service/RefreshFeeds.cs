@@ -13,6 +13,7 @@ namespace SmallRss.Service
 
         private readonly IFeedFactory feedFactory;
         private readonly IDatastore datastore;
+        private readonly object feedUpdateLock = new object();
 
         public RefreshFeeds(IFeedFactory feedFactory, IDatastore datastore)
         {
@@ -51,19 +52,43 @@ namespace SmallRss.Service
             }
         }
 
+        public void Refresh(int userAccountId, int feedId)
+        {
+            try
+            {
+                var rssFeed = datastore.Load<RssFeed>(feedId);
+                if (rssFeed == null)
+                    return;
+                var userFeeds = datastore.LoadAll<UserFeed>(Tuple.Create("RssFeedId", (object)rssFeed.Id), Tuple.Create("UserAccountId", (object)userAccountId));
+                if (!userFeeds.Any())
+                    return;
+
+                log.InfoFormat("Refreshing {0} ", rssFeed.Uri);
+
+                RefreshRssFeed(rssFeed);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error refreshing RSS feed: ", ex);
+            }
+        }
+
         private void RefreshRssFeed(RssFeed rssFeed)
         {
-            var feed = feedFactory.CreateFeed(new Uri(rssFeed.Uri));
-            var lastItemUpdate = feed.Items.Select(i => i.DatePublished.ToUniversalTime()).Concat(new[] { feed.LastUpdated.ToUniversalTime() }).Max();
-
-            log.DebugFormat("Feed {0} was last updated {1} - our version was updated: {2}", rssFeed.Uri, lastItemUpdate, rssFeed.LastUpdated);
-            if (!rssFeed.LastUpdated.HasValue || lastItemUpdate > rssFeed.LastUpdated)
+            lock (feedUpdateLock)
             {
-                UpdateFeedItems(feed, rssFeed);
-                rssFeed.LastUpdated = lastItemUpdate;
+                var feed = feedFactory.CreateFeed(new Uri(rssFeed.Uri));
+                var lastItemUpdate = feed.Items.Select(i => i.DatePublished.ToUniversalTime()).Concat(new[] { feed.LastUpdated.ToUniversalTime() }).Max();
+
+                log.DebugFormat("Feed {0} was last updated {1} - our version was updated: {2}", rssFeed.Uri, lastItemUpdate, rssFeed.LastUpdated);
+                if (!rssFeed.LastUpdated.HasValue || lastItemUpdate > rssFeed.LastUpdated)
+                {
+                    UpdateFeedItems(feed, rssFeed);
+                    rssFeed.LastUpdated = lastItemUpdate;
+                }
+                rssFeed.LastRefreshed = DateTime.UtcNow;
+                datastore.Update(rssFeed);
             }
-            rssFeed.LastRefreshed = DateTime.UtcNow;
-            datastore.Update(rssFeed);
         }
 
         private void UpdateFeedItems(IFeed feed, RssFeed rssFeed)
