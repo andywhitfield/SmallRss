@@ -22,23 +22,23 @@ namespace SmallRss.Data
 
         public void UpdateAccount(UserAccount userAccount)
         {
-            log.InfoFormat("Updating account: ", userAccount.Id);
+            log.InfoFormat("Updating account: {0}", userAccount.Id);
 
             var userAccountSettings =
-                userAccount.AuthenticationIds.Select(a => new UserAccountSetting
+                userAccount/*.AuthenticationIds.Select(a => new UserAccountSetting
                 {
                     UserAccountId = userAccount.Id,
                     SettingType = "AuthenticationId",
                     SettingName = "AuthenticationId",
                     SettingValue = a
                 })
-                .Concat(userAccount.ExpandedGroups.Select(g => new UserAccountSetting
+                .Concat(userAccount*/.ExpandedGroups.Select(g => new UserAccountSetting
                 {
                     UserAccountId = userAccount.Id,
                     SettingType = "ExpandedGroup",
                     SettingName = "ExpandedGroup",
                     SettingValue = g
-                }))
+                })
                 .Concat(new[] { new UserAccountSetting
                 {
                     UserAccountId = userAccount.Id,
@@ -56,7 +56,7 @@ namespace SmallRss.Data
             using (var txn = db.GetTransaction())
             {
                 db.Update(userAccount);
-                db.Delete<UserAccountSetting>("where useraccountid = @0", userAccount.Id);
+                db.Delete<UserAccountSetting>("where useraccountid = @0 and settingtype <> 'AuthenticationId'", userAccount.Id);
                 foreach (var setting in userAccountSettings)
                     db.Insert(setting);
 
@@ -71,7 +71,10 @@ namespace SmallRss.Data
             if (accountAuth != null)
             {
                 log.DebugFormat("Found existing account with auth id {0}: {1}", authenticationId, accountAuth.UserAccountId);
-                return LoadUserAccount(accountAuth.UserAccountId);
+                var account = LoadUserAccount(accountAuth.UserAccountId);
+                account.LastLogin = DateTime.UtcNow;
+                db.Save(account);
+                return account;
             }
             else
             {
