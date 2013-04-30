@@ -4,6 +4,10 @@ using QDFeedParser.Xml;
 using SmallRss.Data;
 using SmallRss.Parsing;
 using SmallRss.Service.Api;
+using SmallRss.Service.Jobs;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace SmallRss.Service
 {
@@ -35,6 +39,12 @@ namespace SmallRss.Service
             kernel.Bind<IDatastore>().To<PetaPocoDatastore>();
             kernel.Bind<RefreshFeeds>().ToSelf().InSingletonScope();
             kernel.Bind<ISmallRssApi>().To<SmallRssApi>();
+
+            // auto register all IDailyJob implementations...
+            foreach (var dailyJobType in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && typeof(IDailyJob).IsAssignableFrom(t)))
+                kernel.Bind<IDailyJob>().To(dailyJobType);
+
+            kernel.Bind<DailyJobs>().ToSelf();
 
             return kernel;
         }

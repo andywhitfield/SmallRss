@@ -44,7 +44,7 @@ namespace SmallRss.Web.Controllers
             else if (feed.Story.HasValue)
             {
                 var article = datastore.Load<Article>(feed.Story.Value);
-                var feedToMarkAsRead = datastore.LoadAll<UserFeed>(Tuple.Create("RssFeedId", (object)article.RssFeedId), Tuple.Create("UserAccountId", (object)user.Id)).FirstOrDefault();
+                var feedToMarkAsRead = datastore.LoadAll<UserFeed>(Tuple.Create<string, object, ClauseComparsion>("RssFeedId", article.RssFeedId, ClauseComparsion.Equals), Tuple.Create<string, object, ClauseComparsion>("UserAccountId", user.Id, ClauseComparsion.Equals)).FirstOrDefault();
                 if (feedToMarkAsRead != null && feedToMarkAsRead.UserAccountId == user.Id)
                 {
                     MarkAsRead(feedToMarkAsRead, article.Id, feed.Read);

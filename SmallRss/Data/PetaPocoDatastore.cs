@@ -119,11 +119,11 @@ namespace SmallRss.Data
             return db.Query<T>("where " + foreignKeyColumn + " = @0", foreignKeyValue);
         }
 
-        public IEnumerable<T> LoadAll<T>(params Tuple<string, object>[] foreignKeyColumnValues)
+        public IEnumerable<T> LoadAll<T>(params Tuple<string, object, ClauseComparsion>[] loadClauses)
         {
             var sql = PetaPoco.Sql.Builder;
-            foreach (var colVal in foreignKeyColumnValues)
-                sql.Where(colVal.Item1 + " = @0", colVal.Item2);
+            foreach (var colVal in loadClauses)
+                sql.Where(colVal.Item1 + " " + Operator(colVal.Item3) + " @0", colVal.Item2);
 
             return db.Query<T>(sql);
         }
@@ -231,6 +231,34 @@ and uar.Id is null", feed.RssFeedId, feed.UserAccountId);
         public int Remove<T>(T entity)
         {
             return db.Delete(entity);
+        }
+
+        public int RemoveAll<T>(params Tuple<string, object, ClauseComparsion>[] removeClauses)
+        {
+            var sql = PetaPoco.Sql.Builder;
+            foreach (var colVal in removeClauses)
+                sql.Where(colVal.Item1 + " " + Operator(colVal.Item3) + " @0", colVal.Item2);
+
+            return db.Delete<T>(sql);
+        }
+
+        private string Operator(ClauseComparsion op)
+        {
+            switch (op)
+            {
+                case ClauseComparsion.Equals:
+                    return "=";
+                case ClauseComparsion.GreaterThan:
+                    return ">";
+                case ClauseComparsion.GreaterThanOrEqual:
+                    return ">=";
+                case ClauseComparsion.LessThan:
+                    return "<";
+                case ClauseComparsion.LessThanOrEqual:
+                    return "<=";
+                default:
+                    throw new ArgumentException("Unsupported comparison operator: " + op);
+            }
         }
     }
 }

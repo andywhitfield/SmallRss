@@ -59,7 +59,7 @@ namespace SmallRss.Service
                 var rssFeed = datastore.Load<RssFeed>(feedId);
                 if (rssFeed == null)
                     return;
-                var userFeeds = datastore.LoadAll<UserFeed>(Tuple.Create("RssFeedId", (object)rssFeed.Id), Tuple.Create("UserAccountId", (object)userAccountId));
+                var userFeeds = datastore.LoadAll<UserFeed>(Tuple.Create<string, object, ClauseComparsion>("RssFeedId", rssFeed.Id, ClauseComparsion.Equals), Tuple.Create<string, object, ClauseComparsion>("UserAccountId", userAccountId, ClauseComparsion.Equals));
                 if (!userFeeds.Any())
                     return;
 

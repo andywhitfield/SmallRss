@@ -87,6 +87,10 @@
   <ItemGroup>
     <Compile Include="Api\ISmallRssApi.cs" />
     <Compile Include="Api\SmallRssApi.cs" />
+    <Compile Include="Jobs\ArticleArchive.cs" />
+    <Compile Include="Jobs\DailyJobs.cs" />
+    <Compile Include="Jobs\IDailyJob.cs" />
+    <Compile Include="Jobs\Log4NetPurge.cs" />
     <Compile Include="NinjectConfig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

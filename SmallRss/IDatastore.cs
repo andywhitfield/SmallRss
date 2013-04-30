@@ -28,10 +28,11 @@ namespace SmallRss
 
         T Load<T>(object primaryKey);
         IEnumerable<T> LoadAll<T>(string foreignKeyColumn, object foreignKeyValue);
-        IEnumerable<T> LoadAll<T>(params Tuple<string, object>[] foreignKeyColumnValues);
+        IEnumerable<T> LoadAll<T>(params Tuple<string, object, ClauseComparsion>[] loadClauses);
 
         T Store<T>(T entity);
         T Update<T>(T entity);
         int Remove<T>(T entity);
+        int RemoveAll<T>(params Tuple<string, object, ClauseComparsion>[] removeClauses);
     }
 }
