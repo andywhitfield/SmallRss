@@ -11,6 +11,7 @@ namespace SmallRss.Service.Jobs
         private static readonly ILog log = LogManager.GetLogger(typeof(ArticleArchive));
 
         private readonly IDatastore datastore;
+        private readonly int maxArticleCount = 500;
 
         public ArticleArchive(IDatastore datastore)
         {
@@ -25,18 +26,14 @@ namespace SmallRss.Service.Jobs
                 try
                 {
                     log.InfoFormat("Archiving {0} ", rssFeed.Uri);
-                    ArchiveArticles(rssFeed);
+                    var archived = datastore.RemoveArticles(rssFeed, maxArticleCount);
+                    log.DebugFormat("Archived {0}...articles removed: {1}", rssFeed.Uri, archived);
                 }
                 catch (Exception ex)
                 {
                     log.Error(string.Format("Error archiving RSS feed {0} [{1}]: ", rssFeed.Id, rssFeed.Uri), ex);
                 }
             }
-        }
-
-        private void ArchiveArticles(RssFeed feed)
-        {
-            
         }
     }
 }

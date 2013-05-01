@@ -26,6 +26,11 @@ namespace SmallRss
         int RemoveUserArticleRead(UserArticlesRead userArticleRead);
         int RemoveUserArticleRead(UserAccount user, UserFeed feed);
 
+        /// <summary>
+        /// Remove (or archive) all the articles in the given feed, leaving only 'leave' number.
+        /// </summary>
+        int RemoveArticles(RssFeed feed, int leave);
+
         T Load<T>(object primaryKey);
         IEnumerable<T> LoadAll<T>(string foreignKeyColumn, object foreignKeyValue);
         IEnumerable<T> LoadAll<T>(params Tuple<string, object, ClauseComparsion>[] loadClauses);

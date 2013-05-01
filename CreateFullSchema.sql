@@ -108,6 +108,23 @@ CREATE TABLE [dbo].[Log] (
     [Exception] [nvarchar] (2000) NULL
 ) ON [PRIMARY]
 GO
+/****** Object:  Table [dbo].[ArticleArchive]    Script Date: 04/13/2013 11:57:46 ******/
+CREATE TABLE [dbo].[ArticleArchive](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Inserted] [datetime] NOT NULL,
+	[ArticleId] [int] NOT NULL,
+	[RssFeedId] [int] NOT NULL,
+	[ArticleGuid] [nvarchar](max) NOT NULL,
+	[Heading] [nvarchar](max) NULL,
+	[Body] [nvarchar](max) NULL,
+	[Url] [nvarchar](500) NULL,
+	[Published] [datetime] NULL,
+ CONSTRAINT [PK_ArticleArchive] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 /****** Object:  ForeignKey [FK_Article_RssFeed]    Script Date: 04/13/2013 11:57:46 ******/
 ALTER TABLE [dbo].[Article]  WITH CHECK ADD  CONSTRAINT [FK_Article_RssFeed] FOREIGN KEY([RssFeedId])
 REFERENCES [dbo].[RssFeed] ([Id])

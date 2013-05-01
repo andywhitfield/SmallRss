@@ -278,8 +278,12 @@ $(function () {
         $("#articleGrid").jqGrid('setGridWidth', $("#articleGridContainer").width());
     });
     $('#mainSplitter').bind('mouseup.spliter', function () {
+        if ($('#splitWest').width() == model.splitWestPosition && $('#splitNorth').height() == model.splitNorthPosition)
+            return;
         console.log('resized splitter: ' + $('#splitWest').width() + '/' + $('#splitNorth').height());
         $.post(urls.userlayout_api, { splitWest: $('#splitWest').width(), splitNorth: $('#splitNorth').height() });
+        model.splitWestPosition = $('#splitWest').width();
+        model.splitNorthPosition = $('#splitNorth').height();
     });
 
     app.run();

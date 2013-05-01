@@ -216,6 +216,33 @@ and uar.Id is null", feed.RssFeedId, feed.UserAccountId);
                 feed.Id);
         }
 
+        public int RemoveArticles(RssFeed feed, int leave)
+        {
+            using (var txn = db.GetTransaction())
+            {
+                var maxIdToRemove = db.ExecuteScalar<int>("select min(id) from (select top " + leave + " id from Article where RssFeedId = @0 order by id desc) a", feed.Id);
+                log.DebugFormat("Archiving articles from feed {0} with ID < {1}", feed.Id, maxIdToRemove);
+
+                var archived = db.Execute(@"insert into ArticleArchive([Inserted], [ArticleId], [RssFeedId], [ArticleGuid], [Heading], [Body], [Url], [Published])
+select GETUTCDATE(),*
+from Article
+where RssFeedId = @0
+and id < @1", feed.Id, maxIdToRemove);
+                log.DebugFormat("Copied {0} articles to the archive table", archived);
+
+                var userReadDeleted = db.Execute(@"delete uar
+from UserArticlesRead uar
+join Article a on uar.ArticleId = a.Id
+where a.RssFeedId < @0
+and a.id < @1", feed.Id, maxIdToRemove);
+                var deleted = db.Execute("delete from Article where RssFeedId = @0 and id < @1", feed.Id, maxIdToRemove);
+                log.InfoFormat("Archived {0} items from the article table for feed {1} ({2} deleted, {3} user read records deleted).", archived, feed.Id, deleted, userReadDeleted);
+
+                txn.Complete();
+                return deleted;
+            }
+        }
+
         public T Store<T>(T entity)
         {
             db.Insert(entity);
