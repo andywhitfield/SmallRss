@@ -233,7 +233,7 @@ and id < @1", feed.Id, maxIdToRemove);
                 var userReadDeleted = db.Execute(@"delete uar
 from UserArticlesRead uar
 join Article a on uar.ArticleId = a.Id
-where a.RssFeedId < @0
+where a.RssFeedId = @0
 and a.id < @1", feed.Id, maxIdToRemove);
                 var deleted = db.Execute("delete from Article where RssFeedId = @0 and id < @1", feed.Id, maxIdToRemove);
                 log.InfoFormat("Archived {0} items from the article table for feed {1} ({2} deleted, {3} user read records deleted).", archived, feed.Id, deleted, userReadDeleted);

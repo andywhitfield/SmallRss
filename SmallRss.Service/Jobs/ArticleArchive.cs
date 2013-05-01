@@ -11,7 +11,7 @@ namespace SmallRss.Service.Jobs
         private static readonly ILog log = LogManager.GetLogger(typeof(ArticleArchive));
 
         private readonly IDatastore datastore;
-        private readonly int maxArticleCount = 500;
+        private readonly int maxArticleCount = 200;
 
         public ArticleArchive(IDatastore datastore)
         {
