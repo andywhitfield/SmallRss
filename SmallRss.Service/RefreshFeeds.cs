@@ -96,6 +96,8 @@ namespace SmallRss.Service
             log.Debug("There are new items, updating...");
 
             var existing = datastore.LoadAll<Article>("RssFeedId", rssFeed.Id).ToList();
+            var oldestItem = existing.Any() ? existing.Min(a => a.Published ?? DateTime.MinValue) : DateTime.MinValue;
+
             foreach (var itemInFeed in feed.Items)
             {
                 var existingArticle = existing.FirstOrDefault(e => e.ArticleGuid == itemInFeed.Id);
@@ -114,6 +116,12 @@ namespace SmallRss.Service
                 else
                 {
                     log.InfoFormat("Add new article {0}|{1} to feed {2}", itemInFeed.Id, itemInFeed.Title, rssFeed.Uri);
+                    if (itemInFeed.DatePublished.ToUniversalTime() < oldestItem)
+                    {
+                        log.InfoFormat("Article {0} is older than the oldest item...has probably already been archived so not adding.", itemInFeed.Id);
+                        continue;
+                    }
+
                     datastore.Store(new Article
                     {
                         Heading = itemInFeed.Title,

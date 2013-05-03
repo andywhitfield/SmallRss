@@ -25,6 +25,7 @@ namespace SmallRss.Service
         {
             refreshTimer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
             refreshTimer.Elapsed += (s, e) => RefreshAllFeeds();
+            log.DebugFormat("The refresh feed tasks will run in {0}ms", refreshTimer.Interval);
 
             dailyTasksTimer = new Timer(TimeUntil(TimeSpan.FromHours(2)));
             dailyTasksTimer.Elapsed += (s, e) => RunDailyTasks();
@@ -71,7 +72,7 @@ namespace SmallRss.Service
             }
             finally
             {
-                log.InfoFormat("Done refresh, will run again in {0}", interval);
+                log.InfoFormat("Done refresh, will run again in {0}ms", refreshTimer.Interval);
                 refreshTimer.Start();
             }
         }
@@ -90,7 +91,7 @@ namespace SmallRss.Service
             finally
             {
                 dailyTasksTimer.Interval = TimeUntil(TimeSpan.FromHours(2));
-                log.InfoFormat("Done running all daily tasks, will run again in {0}", dailyTasksTimer.Interval);
+                log.InfoFormat("Done running all daily tasks, will run again in {0}ms", dailyTasksTimer.Interval);
                 dailyTasksTimer.Start();
             }
         }

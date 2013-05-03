@@ -126,7 +126,7 @@ namespace SmallRss.Parsing
             var channel = document.Root.Element("channel");
 
             rssFeed.Title = channel.Element("title").Value;
-            rssFeed.Description = channel.Element("description").Value;
+            rssFeed.Description = channel.Element("description") == null ? "" : channel.Element("description").Value;
 
             var linkNode = channel.Element("link");
             rssFeed.Link = linkNode == null ? string.Empty : linkNode.Value;
