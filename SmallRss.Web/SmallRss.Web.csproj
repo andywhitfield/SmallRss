@@ -112,6 +112,9 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="FiftyOne.Foundation">
+      <HintPath>..\packages\51Degrees.mobi.2.1.15.1\lib\NET40\FiftyOne.Foundation.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -219,8 +222,21 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Mobile\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Mobile\Controllers\UserController.cs" />
+    <Compile Include="Areas\Mobile\MobileAreaRegistration.cs" />
+    <Compile Include="Areas\Mobile\Models\Home\IndexViewModel.cs" />
+    <Compile Include="Areas\Mobile\Models\User\ArticleViewModel.cs" />
+    <Compile Include="Areas\Mobile\Models\User\FeedViewModel.cs" />
+    <Compile Include="Areas\Mobile\Views\Home\xrds.aspx.cs">
+      <DependentUpon>xrds.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Areas\Mobile\Views\Home\xrds.aspx.designer.cs">
+      <DependentUpon>xrds.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\ArticleController.cs" />
-    <Compile Include="Controllers\ControllerExtensions.cs" />
+    <Compile Include="Models\ControllerExtensions.cs" />
     <Compile Include="Controllers\FeedStatusController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
@@ -256,10 +272,26 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Mobile\Views\Home\xrds.aspx" />
     <Content Include="error.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="51Degrees.mobi.config" />
+    <Content Include="Areas\Mobile\Views\Web.config" />
+    <Content Include="Areas\Mobile\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Mobile\Views\_ViewStart.cshtml" />
+    <Content Include="mob\css\smallrss.css" />
+    <Content Include="mob\image\smallrss.png" />
+    <Content Include="mob\js\jquery-1.9.1.min.map" />
+    <Content Include="Areas\Mobile\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Mobile\Views\User\Feed.cshtml" />
+    <Content Include="Areas\Mobile\Views\User\Article.cshtml" />
     <None Include="Properties\PublishProfiles\FTP to EC2.pubxml" />
+    <Content Include="mob\image\favicon.ico" />
+    <None Include="mob\js\jquery-1.9.1.intellisense.js" />
+    <Content Include="mob\js\jquery-1.9.1.js" />
+    <Content Include="mob\js\jquery-1.9.1.min.js" />
+    <Content Include="mob\js\smallrss.js" />
     <Content Include="resource\css\aciTree.css" />
     <Content Include="resource\css\images\animated-overlay.gif" />
     <Content Include="resource\css\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />

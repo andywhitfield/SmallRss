@@ -13,10 +13,6 @@ namespace SmallRss
         void UpdateAccount(UserAccount userAccount);
 
         /// <summary>
-        /// Load a UserFeed and RssFeed instance by either a UserFeedId or RssFeedId. At least one id must be provided.
-        /// </summary>
-        Tuple<UserFeed, RssFeed> LoadUserRssFeed(int? userFeedId, int? rssFeedId);
-        /// <summary>
         /// Load all the UserFeed and RssFeed instances by for the given account.
         /// </summary>
         IEnumerable<Tuple<UserFeed, RssFeed>> LoadUserRssFeeds(int userAccountId);

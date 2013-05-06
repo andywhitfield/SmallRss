@@ -25,6 +25,14 @@ namespace SmallRss.Web
                 "~/resource/css/ui.jqgrid.css",
                 "~/resource/css/smallrss.css"
             ));
+
+            bundles.Add(new ScriptBundle("~/mob/js/alljs").Include(
+                "~/mob/js/jquery-{version}.js",
+                "~/mob/js/smallrss.js"
+            ));
+            bundles.Add(new StyleBundle("~/mob/css/allcss").Include(
+                "~/mob/css/smallrss.css"
+            ));
         }
     }
 }

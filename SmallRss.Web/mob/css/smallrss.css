@@ -1,0 +1,107 @@
+﻿body {
+    margin: 0 2px 5px 2px;
+}
+
+body, p, div, span, a {
+    font-family: Verdana, Georgia, sans-serif;
+    font-size: 10pt;
+}
+
+a, a:link, a:visited {
+    color: #2779aa;
+}
+a:hover, a:active {
+    color: #ff6a00;
+}
+
+header img {
+    float: left;
+    margin: 3px 4px 0 0;
+    border: 0;
+}
+
+header h1 {
+    float: left;
+    margin: 0 0 5px 0;
+}
+header span.manage {
+    float: right;
+    margin-top: 6px;
+}
+header a {
+    text-decoration: none;
+}
+
+article {
+    clear: both;
+}
+
+.ui-tree {
+    list-style: none;
+    padding: 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+.ui-tree li {
+    border: 1px solid #ffffff;
+    padding: 6px 3px;
+    background-color: #2779aa;
+    color: #ffffff;
+}
+.ui-tree li ul {
+    list-style: none;
+    padding: 0;
+    font-weight: normal;
+    margin-top: 4px;
+}
+.ui-tree li ul li {
+    border: 0;
+    padding: 3px 3px;
+    background-color: #ffffff;
+    color: #2779aa;
+}
+.ui-tree-alt {
+    background-color: #efefef !important;
+}
+.ui-tree-unread {
+    font-weight: bold;
+}
+input[type='button'] {
+    min-width: 140px;
+}
+input.markAllRead {
+    float: right;
+}
+div.filterButtons {
+    overflow: auto;
+    border: 1px solid #ffffff;
+    padding: 6px 3px;
+    background-color: #2779aa;
+    color: #ffffff;
+}
+div.filterButtons div {
+    font-weight: bold;
+    margin-left: 5px;
+    font-size: 11pt;
+}
+.articles {
+    list-style: none;
+    padding: 0;
+    cursor: pointer;
+}
+.articles li {
+    border-bottom: 1px dashed #000000;
+    padding-bottom: 3px;
+    padding-top: 5px;
+}
+li.unread {
+    font-weight: bold;
+}
+.articlesAlt {
+    background-color: #efefef !important;
+}
+.articlesHeader {
+    font-weight: bold;
+    color: #2779aa;
+    font-size: 11pt;
+}

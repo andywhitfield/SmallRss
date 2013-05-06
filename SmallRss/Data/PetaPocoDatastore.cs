@@ -133,33 +133,6 @@ namespace SmallRss.Data
             return db.SingleOrDefault<T>(primaryKey);
         }
 
-        public Tuple<UserFeed, RssFeed> LoadUserRssFeed(int? userFeedId, int? rssFeedId)
-        {
-            if (userFeedId.HasValue)
-            {
-                return db.Query<UserFeed, RssFeed, Tuple<UserFeed, RssFeed>>(
-                    (uf, rf) => Tuple.Create(uf, rf),
-                    @"select *
-                      from userfeed uf
-                      join rssfeed rf
-                      on uf.rssfeedid = rf.id
-                      where uf.id = @0", userFeedId.Value).Single();
-            }
-
-            if (rssFeedId.HasValue)
-            {
-                return db.Query<UserFeed, RssFeed, Tuple<UserFeed, RssFeed>>(
-                    (uf, rf) => Tuple.Create(uf, rf),
-                    @"select *
-                      from userfeed uf
-                      join rssfeed rf
-                      on uf.rssfeedid = rf.id
-                      where rf.id = @0", rssFeedId.Value).Single();
-            }
-
-            throw new ArgumentException("No userFeedId or rssFeedId provided.");
-        }
-
         public IEnumerable<Tuple<UserFeed, RssFeed>> LoadUserRssFeeds(int userAccountId)
         {
             return db.Query<UserFeed, RssFeed, Tuple<UserFeed, RssFeed>>(

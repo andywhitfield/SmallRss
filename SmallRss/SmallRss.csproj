@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -60,6 +63,8 @@
     <Compile Include="Data\Models\UserAccount.cs" />
     <Compile Include="Data\Models\UserAccountSetting.cs" />
     <Compile Include="Data\PetaPocoDatastore.cs" />
+    <Compile Include="FriendlyDate.cs" />
+    <Compile Include="HtmlPreview.cs" />
     <Compile Include="IDatastore.cs" />
     <Compile Include="Parsing\DateParser.cs" />
     <Compile Include="Parsing\SmallRssFeedParser.cs" />

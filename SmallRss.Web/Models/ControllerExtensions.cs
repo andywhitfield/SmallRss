@@ -4,7 +4,7 @@ using System.Security.Principal;
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace SmallRss.Web.Controllers
+namespace SmallRss.Web.Models
 {
     public static class ControllerExtensions
     {

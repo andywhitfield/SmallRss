@@ -1,0 +1,23 @@
+﻿@model SmallRss.Web.Areas.Mobile.Models.User.FeedViewModel
+<div class="filterButtons">
+    <div>@Model.GroupName</div>
+    <input type="button" value="Show All"/>
+    <input class="markAllRead" type="button" value="Mark All Read"/>
+</div>
+<ul class="articles">
+    @foreach (var article in Model.Articles)
+    {
+    <li data-url="@Url.Action("article", "user")/@article.Id" class="@(article.Read ? "" : "unread")">
+        <div>@article.Posted</div>
+        <div class="articlesHeader">@Html.Raw(article.Title)</div>
+        <div>@article.Summary</div>
+    </li>
+    }
+</ul>
+@section Scripts {
+<script type="text/javascript">
+    $(function () {
+        initFeedItems();
+    });
+</script>
+}
