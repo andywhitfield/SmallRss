@@ -2,6 +2,7 @@
 {
     public class ArticleViewModel
     {
+        public int ArticleId { get; set; }
         public int FeedId { get; set; }
         public string FeedName { get; set; }
         public string GroupName { get; set; }

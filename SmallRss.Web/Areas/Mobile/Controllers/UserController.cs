@@ -42,7 +42,9 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
 
             return View(new FeedViewModel
             {
+                FeedId = feed.Id,
                 GroupName = feed.Name,
+                ShowingAll = loggedInUser.ShowAllItems,
                 Articles =
                     articles
                     .OrderBy(a => a.Published)
@@ -65,8 +67,11 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
             if (userFeed == null)
                 return RedirectToAction("", "");
 
+            MarkAsRead(userFeed, article.Id, true);
+
             return View(new ArticleViewModel
             {
+                ArticleId = article.Id,
                 FeedId = userFeed.Id,
                 FeedName = userFeed.Name,
                 GroupName = userFeed.GroupName,
@@ -90,5 +95,49 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
 
             return new EmptyResult();
         }
+
+        public ActionResult ShowAllUnread(bool showAll)
+        {
+            var loggedInUser = this.CurrentUser(datastore);
+            loggedInUser.ShowAllItems = showAll;
+            datastore.UpdateAccount(loggedInUser);
+            return new EmptyResult();
+        }
+
+        public ActionResult MarkAllRead(int feed)
+        {
+            var loggedInUser = this.CurrentUser(datastore);
+
+            var feedToMarkAllAsRead = datastore.Load<UserFeed>(feed);
+            if (feedToMarkAllAsRead != null && feedToMarkAllAsRead.UserAccountId == loggedInUser.Id)
+            {
+                foreach (var article in datastore.LoadUnreadArticlesInUserFeed(feedToMarkAllAsRead).ToList())
+                    MarkAsRead(feedToMarkAllAsRead, article.Id, true);
+            }
+
+            return new EmptyResult();
+        }
+
+        public ActionResult KeepUnread(int article)
+        {
+            var loggedInUser = this.CurrentUser(datastore);
+            var articleToMarkUnread = datastore.Load<Article>(article);
+            var rssFeed = datastore.Load<RssFeed>(articleToMarkUnread.RssFeedId);
+            var userFeed = datastore.LoadAll<UserFeed>(Tuple.Create("RssFeedId", (object)rssFeed.Id, ClauseComparsion.Equals), Tuple.Create("UserAccountId", (object)loggedInUser.Id, ClauseComparsion.Equals)).FirstOrDefault();
+            if (userFeed == null)
+                return new EmptyResult();
+
+            MarkAsRead(userFeed, article, false);
+
+            return new EmptyResult();
+        }
+
+        private void MarkAsRead(UserFeed feed, int articleId, bool read)
+        {
+            var userArticleRead = new UserArticlesRead { UserAccountId = feed.UserAccountId, UserFeedId = feed.Id, ArticleId = articleId };
+            if (read) datastore.Store(userArticleRead);
+            else datastore.RemoveUserArticleRead(userArticleRead);
+        }
+
     }
 }

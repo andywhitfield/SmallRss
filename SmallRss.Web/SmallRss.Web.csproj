@@ -228,13 +228,6 @@
     <Compile Include="Areas\Mobile\Models\Home\IndexViewModel.cs" />
     <Compile Include="Areas\Mobile\Models\User\ArticleViewModel.cs" />
     <Compile Include="Areas\Mobile\Models\User\FeedViewModel.cs" />
-    <Compile Include="Areas\Mobile\Views\Home\xrds.aspx.cs">
-      <DependentUpon>xrds.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Areas\Mobile\Views\Home\xrds.aspx.designer.cs">
-      <DependentUpon>xrds.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Models\ControllerExtensions.cs" />
     <Compile Include="Controllers\FeedStatusController.cs" />
@@ -272,7 +265,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Mobile\Views\Home\xrds.aspx" />
     <Content Include="error.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -393,7 +385,9 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\ServiceApi\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

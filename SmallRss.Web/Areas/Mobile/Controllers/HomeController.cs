@@ -1,6 +1,6 @@
 ﻿using SmallRss.Data.Models;
-using SmallRss.Web.Models;
 using SmallRss.Web.Areas.Mobile.Models.Home;
+using SmallRss.Web.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -21,7 +21,7 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
         {
             Response.AppendHeader(
                 "X-XRDS-Location",
-                new Uri(Request.Url, Response.ApplyAppPathModifier("~/m/home/xrds")).AbsoluteUri);
+                new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
             var loggedInUser = this.CurrentUser(datastore);
             var userFeeds = datastore.LoadAll<UserFeed>("UserAccountId", loggedInUser.Id);
@@ -41,7 +41,5 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
 
             return View(new IndexViewModel { Groups = userGroupsAndFeeds });
         }
-
-        public ActionResult Xrds() { return View(); }
     }
 }

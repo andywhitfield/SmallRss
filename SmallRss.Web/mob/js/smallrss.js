@@ -26,6 +26,21 @@ function initFeedItems() {
     $('.filterButtons > div').css('cursor', 'pointer').click(function () {
         window.location = urls.home;
     });
+    $('input.showAll').click(function () {
+        $.post(urls.showAllOrUnread, { showAll: true }, function () {
+            window.location.reload();
+        });
+    });
+    $('input.showUnread').click(function () {
+        $.post(urls.showAllOrUnread, { showAll: false }, function () {
+            window.location.reload();
+        });
+    });
+    $('input.markAllRead').click(function () {
+        $.post(urls.markAllRead, { feed: $(this).attr('data-id') }, function () {
+            window.location.reload();
+        });
+    });
 }
 
 function initArticle() {
@@ -34,9 +49,16 @@ function initArticle() {
         window.open($(this).attr('data-url'), '_blank');
     }).css('cursor', 'pointer');
     $('input[value="Back"]').click(function () {
-        window.location = $(this).attr('data-url');
+        window.location = $(this).attr('data-url') + '?offset=' + new Date().getTimezoneOffset();
     });
     $('.filterButtons > div').css('cursor', 'pointer').click(function () {
-        window.location = $(this).attr('data-url');
+        window.location = $(this).attr('data-url') + '?offset=' + new Date().getTimezoneOffset();
+    });
+    $('input.keepUnread').click(function () {
+        var articleId = $(this).attr('data-id');
+        var feedUrl = $(this).attr('data-url');
+        $.post(urls.keepUnread, { article: articleId }, function () {
+            window.location = feedUrl + '?offset=' + new Date().getTimezoneOffset();
+        });
     });
 }

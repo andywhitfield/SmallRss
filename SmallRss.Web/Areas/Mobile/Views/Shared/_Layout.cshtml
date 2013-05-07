@@ -7,6 +7,9 @@
         <script type="text/javascript">
             var urls = {
                 expandcollapse: '@Url.Action("expandcollapse", "user")',
+                showAllOrUnread: '@Url.Action("showallunread", "user")',
+                markAllRead: '@Url.Action("markallread", "user")',
+                keepUnread: '@Url.Action("keepunread", "user")',
                 home: '@Url.Action("", "")'
             };
         </script>
@@ -16,7 +19,9 @@
     <body>
         <header>
             <a href="@Url.Action("", "")"><img src="@Url.Content("~/mob/image/smallrss.png")" width="28" height="28" alt="SmallRss" /><h1>SmallRss</h1></a>
-            <span class="manage"><a href="@Url.Action("logout")">Logout</a></span>
+            @if (User != null && User.Identity.IsAuthenticated) {
+            <span class="manage"><a href="@Url.Content("~/home/logout")">Logout</a></span>
+            }
         </header>
         <article>
         @RenderBody()

@@ -9,7 +9,7 @@
     </li>
 </ul>
 <input type="button" value="Back" data-url="@Url.Action("feed")/@Model.FeedId"/>
-<input type="button" value="Keep Unread"/>
+<input type="button" value="Keep Unread" class="keepUnread" data-id="@Model.ArticleId" data-url="@Url.Action("feed")/@Model.FeedId"/>
 @section Scripts {
 <script type="text/javascript">
     $(function () {

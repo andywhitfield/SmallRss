@@ -1,8 +1,14 @@
 ﻿@model SmallRss.Web.Areas.Mobile.Models.User.FeedViewModel
 <div class="filterButtons">
-    <div>@Model.GroupName</div>
-    <input type="button" value="Show All"/>
-    <input class="markAllRead" type="button" value="Mark All Read"/>
+    <div>@Model.GroupName (@Model.Articles.Count())</div>
+    @if (Model.ShowingAll) {
+    <input class="showUnread" type="button" value="Show Unread"/>
+    } else {
+    <input class="showAll" type="button" value="Show All"/>
+    }
+    @if (Model.Articles.Any()) {
+    <input class="markAllRead" data-id="@Model.FeedId" type="button" value="Mark All Read"/>
+    }
 </div>
 <ul class="articles">
     @foreach (var article in Model.Articles)
