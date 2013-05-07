@@ -97,7 +97,12 @@ $(function () {
             var feed = this.params['feed'];
             var story = this.params['story'];
             var storyItem = model.findFeedItem(story);
-            if (storyItem == null) return;
+            if (storyItem == null) {
+                console.log('could not find story with id: ' + story + ' - attempting to redirect to feed: ' + feed);
+                // attempt to apply #/feed/:feed instead
+                app.setLocation('#/feed/' + feed);
+                return;
+            }
 
             model.selectedArticle(story);
             model.selectedFeed(feed);
