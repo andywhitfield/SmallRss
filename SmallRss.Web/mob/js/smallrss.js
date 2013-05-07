@@ -37,7 +37,7 @@ function initFeedItems() {
         });
     });
     $('input.markAllRead').click(function () {
-        $.post(urls.markAllRead, { feed: $(this).attr('data-id') }, function () {
+        $.post(urls.markAllRead, { feed: $(this).attr('data-id'), maxId: $(this).attr('data-maxid') }, function () {
             window.location.reload();
         });
     });

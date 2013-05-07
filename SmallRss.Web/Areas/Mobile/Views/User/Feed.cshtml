@@ -7,7 +7,7 @@
     <input class="showAll" type="button" value="Show All"/>
     }
     @if (Model.Articles.Any()) {
-    <input class="markAllRead" data-id="@Model.FeedId" type="button" value="Mark All Read"/>
+    <input class="markAllRead" data-id="@Model.FeedId" data-maxid="@Model.MaxArticleId" type="button" value="Mark All Read"/>
     }
 </div>
 <ul class="articles">

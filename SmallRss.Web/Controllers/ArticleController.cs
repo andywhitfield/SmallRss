@@ -34,11 +34,19 @@ namespace SmallRss.Web.Controllers
             var user = this.CurrentUser(datastore);
             if (feed.Feed.HasValue && !feed.Story.HasValue)
             {
+                if (!feed.MaxStory.HasValue || feed.MaxStory.Value <= 0)
+                    feed.MaxStory = int.MaxValue;
+
+                log.DebugFormat("Marking all stories as {1}: {0} up to id {2}", feed.Feed, feed.Read ? "read" : "unread", feed.MaxStory);
+
                 var feedToMarkAllAsRead = datastore.Load<UserFeed>(feed.Feed.Value);
                 if (feedToMarkAllAsRead != null && feedToMarkAllAsRead.UserAccountId == user.Id)
                 {
                     foreach (var article in datastore.LoadUnreadArticlesInUserFeed(feedToMarkAllAsRead).ToList())
+                    {
+                        if (article.Id > feed.MaxStory) continue;
                         MarkAsRead(feedToMarkAllAsRead, article.Id, feed.Read);
+                    }
                 }
             }
             else if (feed.Story.HasValue)

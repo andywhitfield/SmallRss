@@ -17,6 +17,13 @@
             if (items[i].story == storyId) return items[i];
         return null;
     };
+    this.maxFeedItemId = function () {
+        var items = this.feedItems();
+        var maxItemId = 0;
+        for (var i = 0; i < items.length; i++)
+            if (items[i].story > maxItemId) maxItemId = items[i].story;
+        return maxItemId;
+    };
     this.markStory = function (id, asRead) {
         var story = this.findFeedItem(id);
         if (story != null) story.read = asRead;
@@ -249,7 +256,7 @@ $(function () {
         window.open(model.articleUrl(), '_blank');
     });
     $('#markAllRead').click(function () {
-        $.post(urls.article_api, { feed: model.selectedFeed(), read: true }, function () {
+        $.post(urls.article_api, { feed: model.selectedFeed(), read: true, maxStory: model.maxFeedItemId() }, function () {
             $.each(model.feedItems(), function (i, f) {
                 if (f.feed == model.selectedFeed())
                     model.markStory(f.story, true);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SmallRss.Web.Areas.Mobile.Models.User
 {
@@ -8,6 +9,7 @@ namespace SmallRss.Web.Areas.Mobile.Models.User
         public string GroupName { get; set; }
         public IEnumerable<ArticleSummary> Articles { get; set; }
         public bool ShowingAll { get; set; }
+        public int MaxArticleId { get { return Articles.Max(a => a.Id); } }
 
         public class ArticleSummary
         {

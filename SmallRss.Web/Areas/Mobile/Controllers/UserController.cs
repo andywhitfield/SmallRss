@@ -104,15 +104,23 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
             return new EmptyResult();
         }
 
-        public ActionResult MarkAllRead(int feed)
+        public ActionResult MarkAllRead(int feed, int? maxId)
         {
             var loggedInUser = this.CurrentUser(datastore);
+
+            if (!maxId.HasValue || maxId.Value <= 0)
+                maxId = int.MaxValue;
+
+            log.DebugFormat("Marking all as read in feed {0} up to id {1}", feed, maxId);
 
             var feedToMarkAllAsRead = datastore.Load<UserFeed>(feed);
             if (feedToMarkAllAsRead != null && feedToMarkAllAsRead.UserAccountId == loggedInUser.Id)
             {
                 foreach (var article in datastore.LoadUnreadArticlesInUserFeed(feedToMarkAllAsRead).ToList())
+                {
+                    if (article.Id > maxId) continue;
                     MarkAsRead(feedToMarkAllAsRead, article.Id, true);
+                }
             }
 
             return new EmptyResult();
