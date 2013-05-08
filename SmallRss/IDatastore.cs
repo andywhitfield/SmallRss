@@ -1,9 +1,6 @@
 ﻿using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmallRss
 {
@@ -30,6 +27,7 @@ namespace SmallRss
         T Load<T>(object primaryKey);
         IEnumerable<T> LoadAll<T>(string foreignKeyColumn, object foreignKeyValue);
         IEnumerable<T> LoadAll<T>(params Tuple<string, object, ClauseComparsion>[] loadClauses);
+        IEnumerable<T> LoadAll<T>(string sql, params object[] args);
 
         T Store<T>(T entity);
         T Update<T>(T entity);

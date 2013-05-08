@@ -1,11 +1,8 @@
 ﻿using log4net;
-using PetaPoco.Internal;
 using SmallRss.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmallRss.Data
 {
@@ -126,6 +123,11 @@ namespace SmallRss.Data
                 sql.Where(colVal.Item1 + " " + Operator(colVal.Item3) + " @0", colVal.Item2);
 
             return db.Query<T>(sql);
+        }
+
+        public IEnumerable<T> LoadAll<T>(string sql, params object[] args)
+        {
+            return db.Query<T>(sql, args);
         }
 
         public T Load<T>(object primaryKey)
