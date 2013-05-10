@@ -23,9 +23,18 @@ namespace SmallRss.Service
 
         public RssServices(RefreshFeeds refreshFeeds, DailyJobs dailyJobs, ISmallRssApi wcfApi)
         {
+            var longestRefreshPeriodMinutes = 60 * 12; // refresh at least once every 12hrs
+            var refreshPeriods = 60;                   // refresh active feeds at most once every 12 minutes
+            var interval = (longestRefreshPeriodMinutes / refreshPeriods) * 60 * 1000;
+            var refreshCounter = 0;
+
             refreshTimer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
-            refreshTimer.Elapsed += (s, e) => RefreshAllFeeds();
-            log.DebugFormat("The refresh feed tasks will run in {0}ms", refreshTimer.Interval);
+            refreshTimer.Elapsed += (s, e) =>
+            {
+                RefreshAllFeeds(interval, refreshCounter++);
+                refreshCounter = refreshCounter >= refreshPeriods ? 0 : refreshCounter;
+            };
+            log.DebugFormat("The refresh feed tasks will run in {0}ms, then every {1}ms", refreshTimer.Interval, interval);
 
             dailyTasksTimer = new Timer(TimeUntil(TimeSpan.FromHours(2)));
             dailyTasksTimer.Elapsed += (s, e) => RunDailyTasks();
@@ -57,14 +66,13 @@ namespace SmallRss.Service
             wcfHost.Open();
         }
 
-        private void RefreshAllFeeds()
+        private void RefreshAllFeeds(double interval, int counter)
         {
-            var interval = TimeSpan.FromMinutes(45);
             refreshTimer.Stop();
             try
             {
-                refreshTimer.Interval = interval.TotalMilliseconds;
-                refreshFeeds.Refresh();
+                refreshTimer.Interval = interval;
+                refreshFeeds.Refresh(counter);
             }
             catch (Exception ex)
             {

@@ -21,12 +21,54 @@ namespace SmallRss.Service
             this.datastore = datastore;
         }
 
-        public void Refresh()
+        private Tuple<string, object, ClauseComparsion> LastUpdated(TimeSpan timeAgo)
         {
-            log.Debug("Refreshing all RSS feeds...");
+            var lastUpdatePeriod = DateTime.UtcNow - timeAgo;
+            return Tuple.Create("LastUpdated", (object)lastUpdatePeriod, ClauseComparsion.GreaterThanOrEqual);
+        }
+
+        private IEnumerable<RssFeed> LoadRssFeedsForCounter(int counter)
+        {
+            if (counter == 0)
+            {
+                log.Debug("Refresh all feeds");
+                return datastore.LoadAll<RssFeed>("1", 1);
+            }
+
+            if (counter % 30 == 0)
+            {
+                log.Debug("Refresh only feeds updated in the last 3 days");
+                return datastore.LoadAll<RssFeed>(LastUpdated(TimeSpan.FromDays(3)));
+            }
+
+            if (counter % 15 == 0)
+            {
+                log.Debug("Refresh only feeds updated in the last day");
+                return datastore.LoadAll<RssFeed>(LastUpdated(TimeSpan.FromDays(1)));
+            }
+
+            if (counter % 10 == 0)
+            {
+                log.Debug("Refresh only feeds updated in the last 12 hours");
+                return datastore.LoadAll<RssFeed>(LastUpdated(TimeSpan.FromHours(12)));
+            }
+
+            if (counter % 5 == 0)
+            {
+                log.Debug("Refresh only feeds updated in the last 6 hours");
+                return datastore.LoadAll<RssFeed>(LastUpdated(TimeSpan.FromHours(6)));
+            }
+
+            log.Debug("Refresh only feeds updated in the last 2 hours");
+            return datastore.LoadAll<RssFeed>(LastUpdated(TimeSpan.FromHours(2)));
+        }
+
+        public void Refresh(int counter)
+        {
+            log.Debug("Refreshing RSS feeds...");
             try
             {
-                IEnumerable<RssFeed> allRssFeeds = datastore.LoadAll<RssFeed>("1", 1).ToList();
+                IEnumerable<RssFeed> allRssFeeds = LoadRssFeedsForCounter(counter).ToList();
                 int refreshed = 0;
 
                 foreach (var rssFeed in allRssFeeds)
@@ -44,7 +86,7 @@ namespace SmallRss.Service
                     }
                 }
 
-                log.DebugFormat("Done refreshing all RSS feeds ({0} feeds).", refreshed);
+                log.DebugFormat("Done refreshing RSS feeds ({0} feeds).", refreshed);
             }
             catch (Exception ex)
             {
