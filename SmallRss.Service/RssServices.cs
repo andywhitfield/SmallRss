@@ -28,13 +28,13 @@ namespace SmallRss.Service
             var interval = (longestRefreshPeriodMinutes / refreshPeriods) * 60 * 1000;
             var refreshCounter = 0;
 
-            refreshTimer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
+            refreshTimer = new Timer(interval);
             refreshTimer.Elapsed += (s, e) =>
             {
-                RefreshAllFeeds(interval, refreshCounter++);
+                RefreshAllFeeds(refreshCounter++);
                 refreshCounter = refreshCounter >= refreshPeriods ? 0 : refreshCounter;
             };
-            log.DebugFormat("The refresh feed tasks will run in {0}ms, then every {1}ms", refreshTimer.Interval, interval);
+            log.DebugFormat("The refresh feed tasks will run every {0}ms", refreshTimer.Interval);
 
             dailyTasksTimer = new Timer(TimeUntil(TimeSpan.FromHours(2)));
             dailyTasksTimer.Elapsed += (s, e) => RunDailyTasks();
@@ -66,12 +66,11 @@ namespace SmallRss.Service
             wcfHost.Open();
         }
 
-        private void RefreshAllFeeds(double interval, int counter)
+        private void RefreshAllFeeds(int counter)
         {
             refreshTimer.Stop();
             try
             {
-                refreshTimer.Interval = interval;
                 refreshFeeds.Refresh(counter);
             }
             catch (Exception ex)

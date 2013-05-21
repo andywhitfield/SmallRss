@@ -117,6 +117,10 @@ namespace SmallRss.Parsing
                 return false;
             }
 
+            // If the string ends with 'Z', it means UTC time, so change to a zero UTC offset to avoid a conversion from local to UTC
+            if (value.EndsWith("Z"))
+                value = value.Substring(0, value.Length - 1) + "+00:00";
+
             //------------------------------------------------------------
             //	Perform conversion of RFC-3339 formatted date-time string
             //------------------------------------------------------------

@@ -6,5 +6,6 @@
         public int? Story { get; set; }
         public bool Read { get; set; }
         public int? MaxStory { get; set; }
+        public int? Offset { get; set; }
     }
 }

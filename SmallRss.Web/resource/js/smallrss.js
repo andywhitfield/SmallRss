@@ -256,7 +256,7 @@ $(function () {
         window.open(model.articleUrl(), '_blank');
     });
     $('#markAllRead').click(function () {
-        $.post(urls.article_api, { feed: model.selectedFeed(), read: true, maxStory: model.maxFeedItemId() }, function () {
+        $.post(urls.article_api, { feed: model.selectedFeed(), read: true, maxStory: model.maxFeedItemId(), offset: getUtcOffset() }, function (resp) {
             $.each(model.feedItems(), function (i, f) {
                 if (f.feed == model.selectedFeed())
                     model.markStory(f.story, true);
@@ -271,6 +271,21 @@ $(function () {
             });
 
             updateUnreadCounts();
+
+            var rowCount = $('#articleGrid').getRowData().length;
+            // if new articles have come in, then we need to update our grid...
+            $.each(resp, function (i, a) {
+                console.log('new item added after markallread - ' + a.story + ': ' + a.heading);
+                model.feedItems().push(a);
+                $('#articleGrid').addRowData(++rowCount, {
+                    read: false,
+                    feed: a.feed,
+                    story: a.story,
+                    heading: '<span class="unread-item">' + a.heading + '</span>',
+                    article: '<span class="unread-item">' + a.article + '</span>',
+                    posted: '<span class="unread-item">' + a.posted + '</span>'
+                })
+            });
         });
     });
     $('input[name=showAllOrUnread]').change(function () {

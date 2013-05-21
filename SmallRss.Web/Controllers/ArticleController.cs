@@ -2,6 +2,7 @@
 using SmallRss.Data.Models;
 using SmallRss.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -28,23 +29,30 @@ namespace SmallRss.Web.Controllers
         }
 
         // POST api/article
-        public void Post(ArticleReadViewModel feed)
+        public IEnumerable<object> Post(ArticleReadViewModel feed)
         {
             log.DebugFormat("Marking story as {1}: {0}", feed.Story, feed.Read ? "read" : "unread");
+            var newArticles = new List<Article>();
             var user = this.CurrentUser(datastore);
+            var userFeedId = 0;
             if (feed.Feed.HasValue && !feed.Story.HasValue)
             {
                 if (!feed.MaxStory.HasValue || feed.MaxStory.Value <= 0)
                     feed.MaxStory = int.MaxValue;
 
                 log.DebugFormat("Marking all stories as {1}: {0} up to id {2}", feed.Feed, feed.Read ? "read" : "unread", feed.MaxStory);
+                userFeedId = feed.Feed.Value;
 
                 var feedToMarkAllAsRead = datastore.Load<UserFeed>(feed.Feed.Value);
                 if (feedToMarkAllAsRead != null && feedToMarkAllAsRead.UserAccountId == user.Id)
                 {
                     foreach (var article in datastore.LoadUnreadArticlesInUserFeed(feedToMarkAllAsRead).ToList())
                     {
-                        if (article.Id > feed.MaxStory) continue;
+                        if (article.Id > feed.MaxStory)
+                        {
+                            newArticles.Add(article);
+                            continue;
+                        }
                         MarkAsRead(feedToMarkAllAsRead, article.Id, feed.Read);
                     }
                 }
@@ -55,6 +63,7 @@ namespace SmallRss.Web.Controllers
                 var feedToMarkAsRead = datastore.LoadAll<UserFeed>(Tuple.Create<string, object, ClauseComparsion>("RssFeedId", article.RssFeedId, ClauseComparsion.Equals), Tuple.Create<string, object, ClauseComparsion>("UserAccountId", user.Id, ClauseComparsion.Equals)).FirstOrDefault();
                 if (feedToMarkAsRead != null && feedToMarkAsRead.UserAccountId == user.Id)
                 {
+                    userFeedId = feedToMarkAsRead.Id;
                     MarkAsRead(feedToMarkAsRead, article.Id, feed.Read);
                 }
                 else
@@ -62,6 +71,10 @@ namespace SmallRss.Web.Controllers
                     log.WarnFormat("Feed {0} could not be found or is not associated with the current user, will not make any changes", feed.Feed);
                 }
             }
+
+            return newArticles
+                .OrderBy(a => a.Published)
+                .Select(a => new { read = false, feed = userFeedId, story = a.Id, heading = a.Heading, article = HtmlPreview.Preview(a.Body), posted = FriendlyDate.ToString(a.Published, feed.Offset) });
         }
 
         private void MarkAsRead(UserFeed feed, int articleId, bool read)
