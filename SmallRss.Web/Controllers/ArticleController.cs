@@ -80,8 +80,21 @@ namespace SmallRss.Web.Controllers
         private void MarkAsRead(UserFeed feed, int articleId, bool read)
         {
             var userArticleRead = new UserArticlesRead { UserAccountId = feed.UserAccountId, UserFeedId = feed.Id, ArticleId = articleId };
-            if (read) datastore.Store(userArticleRead);
-            else datastore.RemoveUserArticleRead(userArticleRead);
+            if (read)
+            {
+                if (!datastore.LoadAll<UserArticlesRead>(
+                    Tuple.Create("UserAccountId", (object)userArticleRead.UserAccountId, ClauseComparsion.Equals),
+                    Tuple.Create("UserFeedId", (object)userArticleRead.UserFeedId, ClauseComparsion.Equals),
+                    Tuple.Create("ArticleId", (object)userArticleRead.ArticleId, ClauseComparsion.Equals)
+                    ).Any())
+                {
+                    datastore.Store(userArticleRead);
+                }
+            }
+            else
+            {
+                datastore.RemoveUserArticleRead(userArticleRead);
+            }
         }
     }
 }
