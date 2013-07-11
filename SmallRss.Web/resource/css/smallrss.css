@@ -83,6 +83,9 @@ article {
 .openidMyopenid {
     background-image: url(../image/myopenid.ico.png);
 }
+.openidSymantec {
+    background-image: url(../image/symantec.ico.png);
+}
 .openidCustom {
     background-image: url(../image/openid.ico.png);
 }

@@ -310,6 +310,7 @@
     <Content Include="resource\image\myopenid.ico.png" />
     <Content Include="resource\image\openid.ico.png" />
     <Content Include="resource\image\smallrss.png" />
+    <Content Include="resource\image\symantec.ico.png" />
     <Content Include="resource\image\tree-branch-rtl.png" />
     <Content Include="resource\image\tree-no-branches-rtl.png" />
     <Content Include="resource\image\tree-no-branches.png" />
