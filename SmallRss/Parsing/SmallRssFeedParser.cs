@@ -93,7 +93,10 @@ namespace SmallRss.Parsing
             var idNode = itemNode.Element(ns + "id");
             var contentNode = itemNode.Element(ns + "content");
             var summaryNode = itemNode.Element(ns + "summary");
-            var linkNode = itemNode.Element(ns + "link") == null ? null : itemNode.Element(ns + "link").Attribute("href");
+            var linkElements = itemNode.Elements(ns + "link");
+            var linkElement = linkElements.SingleOrDefault(x => x.HasAttributes && x.Attribute("rel") != null && x.Attribute("rel").Value == "alternate");
+            linkElement = linkElement ?? linkElements.FirstOrDefault();
+            var linkNode = linkElement == null ? null : linkElement.Attribute("href");
 
             DateTime datePublished;
             BaseFeedItem item = new Atom10FeedItem
