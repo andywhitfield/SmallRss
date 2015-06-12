@@ -1,22 +1,12 @@
 ﻿@model SmallRss.Web.Areas.Mobile.Models.Home.IndexViewModel
-<ul class="ui-tree">
-    @foreach (var group in Model.Groups)
-    {
-    <li data-id="@group.Id" data-open="@group.Open">@group.Name
-        @if (group.Unread > 0) {<text>(@group.Unread)</text>}
-        <ul>
-            @foreach (var feed in group.Items)
-            {
-                <li data-url="@Url.Action("feed", "user")/@feed.Id" class="@(feed.Unread > 0 ? "ui-tree-unread" : "")">@(feed.Name)@(feed.Unread > 0 ? " (" + feed.Unread + ")" : "")</li>
-            }
-        </ul>
-    </li>
-    }
-</ul>
+<section name="GroupsSection"></section>
+<section name="SelectedFeedSection"></section>
+<section name="SelectedArticleSection"></section>
 @section Scripts {
-<script type="text/javascript">
-    $(function () {
-        initGroups();
-    });
-</script>
+    <script type="text/javascript">
+        $(function () {
+            loadLocalSettings();
+            $.getJSON(urls.feed_api, initialiseFeeds);
+        });
+    </script>
 }

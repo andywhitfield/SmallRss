@@ -283,6 +283,7 @@
     <None Include="mob\js\jquery-1.9.1.intellisense.js" />
     <Content Include="mob\js\jquery-1.9.1.js" />
     <Content Include="mob\js\jquery-1.9.1.min.js" />
+    <Content Include="mob\js\simpleStorage-0.1.3.js" />
     <Content Include="mob\js\smallrss.js" />
     <Content Include="resource\css\aciTree.css" />
     <Content Include="resource\css\images\animated-overlay.gif" />

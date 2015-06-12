@@ -28,6 +28,7 @@ namespace SmallRss.Web
 
             bundles.Add(new ScriptBundle("~/mob/js/alljs").Include(
                 "~/mob/js/jquery-{version}.js",
+                "~/mob/js/simpleStorage-{version}.js",
                 "~/mob/js/smallrss.js"
             ));
             bundles.Add(new StyleBundle("~/mob/css/allcss").Include(

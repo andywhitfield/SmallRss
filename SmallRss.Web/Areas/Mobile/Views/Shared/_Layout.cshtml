@@ -7,26 +7,26 @@
         <title>SmallRss</title>
         <script type="text/javascript">
             var urls = {
-                expandcollapse: '@Url.Action("expandcollapse", "user")',
-                showAllOrUnread: '@Url.Action("showallunread", "user")',
-                markAllRead: '@Url.Action("markallread", "user")',
-                keepUnread: '@Url.Action("keepunread", "user")',
-                home: '@Url.Action("", "")'
+                feedstatus_api: '/api/feedstatus', // '@Url.Action("feedstatus", "api")',
+                article_api: '/api/article', // '@Url.Action("article", "api")',
+                feed_api: '/api/feed', // '@Url.Action("feed", "api")'
             };
         </script>
+
         @Styles.Render("~/mob/css/allcss")
         @Scripts.Render("~/mob/js/alljs")
     </head>
     <body>
         <header>
-            <a href="@Url.Action("", "")"><img src="@Url.Content("~/mob/image/smallrss.png")" width="28" height="28" alt="SmallRss" /><h1>SmallRss</h1></a>
+            <span><a href="@Url.Action("", "")"><img src="@Url.Content("~/mob/image/smallrss.png")" width="28" height="28" alt="SmallRss" />SmallRss</a></span>
             @if (User != null && User.Identity.IsAuthenticated) {
             <span class="manage"><a href="@Url.Content("~/home/logout")">Logout</a></span>
             }
+            <span>Manage Feeds</span>
         </header>
-        <article>
+
         @RenderBody()
-        </article>
+
         @RenderSection("scripts", required: false)
     </body>
 </html>
