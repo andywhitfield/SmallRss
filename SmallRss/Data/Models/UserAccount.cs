@@ -14,6 +14,7 @@ namespace SmallRss.Data.Models
             ShowAllItems = false;
             ExpandedGroups = new HashSet<string>();
             SavedLayout = new Dictionary<string, string>();
+            PocketAccessToken = string.Empty;
         }
 
         public int Id { get; set; }
@@ -27,5 +28,9 @@ namespace SmallRss.Data.Models
         public ISet<string> ExpandedGroups { get; private set; }
         [Ignore]
         public IDictionary<string, string> SavedLayout { get; private set; }
+        [Ignore]
+        public string PocketAccessToken { get; set; }
+        [Ignore]
+        public bool HasPocketAccessToken { get { return !string.IsNullOrWhiteSpace(PocketAccessToken); } }
     }
 }

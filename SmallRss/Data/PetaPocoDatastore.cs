@@ -43,6 +43,13 @@ namespace SmallRss.Data
                     SettingName = "ShowAllItems",
                     SettingValue = Convert.ToString(userAccount.ShowAllItems)
                 }})
+                .Concat(new[] { new UserAccountSetting
+                {
+                    UserAccountId = userAccount.Id,
+                    SettingType = "PocketAccessToken",
+                    SettingName = "PocketAccessToken",
+                    SettingValue = userAccount.PocketAccessToken
+                }})
                 .Concat(userAccount.SavedLayout.Select(l => new UserAccountSetting {
                     UserAccountId = userAccount.Id,
                     SettingType = "SavedLayout",
@@ -83,6 +90,7 @@ namespace SmallRss.Data
                     db.Insert(account);
                     db.Insert(new UserAccountSetting { UserAccountId = account.Id, SettingType = "AuthenticationId", SettingName = "AuthenticationId", SettingValue = authenticationId });
                     db.Insert(new UserAccountSetting { UserAccountId = account.Id, SettingType = "ShowAllItems", SettingName = "ShowAllItems", SettingValue = Convert.ToString(account.ShowAllItems) });
+                    db.Insert(new UserAccountSetting { UserAccountId = account.Id, SettingType = "PocketAccessToken", SettingName = "PocketAccessToken", SettingValue = account.PocketAccessToken });
                     txn.Complete();
                 }
                 return account;
@@ -108,6 +116,8 @@ namespace SmallRss.Data
                 account.SavedLayout.Add(savedLayout.Item2.SettingName, savedLayout.Item2.SettingValue);
             var showAllItemsSetting = accountAndSettings.FirstOrDefault(uas => uas.Item2.SettingType == "ShowAllItems");
             account.ShowAllItems = showAllItemsSetting == null ? false : Convert.ToBoolean(showAllItemsSetting.Item2.SettingValue);
+            var pocketAccessToken = accountAndSettings.FirstOrDefault(uas => uas.Item2.SettingType == "PocketAccessToken");
+            account.PocketAccessToken = pocketAccessToken == null ? string.Empty : pocketAccessToken.Item2.SettingValue;
             return account;
         }
 

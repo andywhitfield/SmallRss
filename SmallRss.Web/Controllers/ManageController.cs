@@ -3,7 +3,13 @@ using SmallRss.Data.Models;
 using SmallRss.Web.Models;
 using SmallRss.Web.Models.Manage;
 using SmallRss.Web.ServiceApi;
+using System;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Web.Mvc;
 
 namespace SmallRss.Web.Controllers
@@ -11,6 +17,8 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        private const string consumerKey = "41619-1a5decf504173a588fd1b492";
+
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageController));
 
         private readonly IDatastore datastore;
@@ -130,10 +138,68 @@ namespace SmallRss.Web.Controllers
             return RedirectToAction("index");
         }
 
+        [HttpPost]
+        public ActionResult Pocket()
+        {
+            var userAccount = this.CurrentUser(datastore);
+            if (userAccount.HasPocketAccessToken)
+            {
+                // disconnect from pocket requested
+                userAccount.PocketAccessToken = string.Empty;
+                datastore.UpdateAccount(userAccount);
+                return RedirectToAction("Index");
+            }
+
+            var redirectUri = Url.Action("PocketAuth", "Manage", routeValues: null, protocol: Request.Url.Scheme);
+            var requestJson = "{\"consumer_key\":\"" + consumerKey + "\", \"redirect_uri\":\"" + redirectUri + "\"}";
+
+            var webClient = new WebClient();
+            webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=UTF-8");
+            webClient.Headers.Add("X-Accept", "application/json");
+            var result = webClient.UploadString("https://getpocket.com/v3/oauth/request", requestJson);
+
+            var jsonDeserializer = new DataContractJsonSerializer(typeof(RequestToken));
+            var requestToken = jsonDeserializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(result))) as RequestToken;
+            if (requestToken == null)
+            {
+                throw new InvalidOperationException("Cannot deserialize response: " + result);
+            }
+            // parse result: {"code":"f5efd910-9415-7fb1-a1f7-981402","state":null}
+            Session["POCKET_CODE"] = requestToken.code;
+            var redirectToPocket = string.Format("https://getpocket.com/auth/authorize?request_token={0}&redirect_uri={1}", Url.Encode(requestToken.code), Url.Encode(redirectUri));
+
+            return Redirect(redirectToPocket);
+        }
+
+        public ActionResult PocketAuth()
+        {
+            var code = Session["POCKET_CODE"];
+            var requestJson = "{\"consumer_key\":\"" + consumerKey + "\", \"code\":\"" + code + "\"}";
+
+            var webClient = new WebClient();
+            webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=UTF-8");
+            webClient.Headers.Add("X-Accept", "application/json");
+            var result = webClient.UploadString("https://getpocket.com/v3/oauth/authorize", requestJson);
+
+            var jsonDeserializer = new DataContractJsonSerializer(typeof(PocketAuthResult));
+            var authResult = jsonDeserializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(result))) as PocketAuthResult;
+            if (authResult == null)
+            {
+                throw new InvalidOperationException("Cannot deserialize response: " + result);
+            }
+
+            // save access token into the user's account
+            var userAccount = this.CurrentUser(datastore);
+            userAccount.PocketAccessToken = authResult.access_token;
+            datastore.UpdateAccount(userAccount);
+
+            return RedirectToAction("Index");
+        }
+
         private IndexViewModel CreateIndexViewModel(UserAccount user)
         {
             var feeds = datastore.LoadUserRssFeeds(user.Id);
-            return new IndexViewModel { Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) };
+            return new IndexViewModel { UserAccount = user, Feeds = feeds.Select(f => new FeedSubscriptionViewModel(f.Item1, f.Item2)).OrderBy(f => f.Name).OrderBy(f => f.Group) };
         }
 
         private EditViewModel CreateEditViewModel(UserAccount user, int feedId)
@@ -146,5 +212,22 @@ namespace SmallRss.Web.Controllers
             var rss = datastore.Load<RssFeed>(feed.RssFeedId);
             return new EditViewModel { Feed = new FeedSubscriptionViewModel(feed, rss), CurrentGroups = feeds.Select(f => f.GroupName).Distinct().OrderBy(g => g) };
         }
+
+        [DataContract]
+        private class RequestToken
+        {
+            [DataMember]
+            public string code;
+        }
+
+        [DataContract]
+        private class PocketAuthResult
+        {
+            [DataMember]
+            public string access_token;
+            [DataMember]
+            public string username;
+        }
+
     }
 }
