@@ -40,8 +40,8 @@ namespace SmallRss.Web.Controllers
             
             var requestJson = "{\"consumer_key\":\"" + ManageController.PocketConsumerKey +
                 "\", \"access_token\":\"" + userAccount.PocketAccessToken +
-                "\", \"url\":\"" + HttpUtility.UrlEncode(article.Url) +
-                "\", \"title\":\"" + HttpUtility.UrlEncode(article.Heading) +
+                "\", \"url\":\"" + HttpUtility.UrlPathEncode(article.Url) +
+                "\", \"title\":\"" + HttpUtility.UrlPathEncode(article.Heading) +
                 "\"}";
 
             var webClient = new WebClient();

@@ -138,6 +138,7 @@ function updateSelectedFeed() {
     $('.feed-title').click(backToAllFeeds);
     $('.article-title, .article-summary, .article-date').click(showArticle);
     $('.article-read button').click(toggleArticleRead);
+    $('.article-pocket button').click(saveArticleToPocket);
 }
 function buildFeedArticles() {
     var feedHtml = '<div class="feed-title">' + feeds.selectedFeedGroup.item + ' &gt; ' + feeds.selectedFeed.item + ' (' + feeds.selectedFeed.count + ')</div>';
@@ -169,6 +170,29 @@ function handleArticleClicked(clickedArticle) {
         markArticleId(clickedArticle, true, function () {
             updateUI();
         });
+    });
+}
+function saveArticleToPocket() {
+    if (feeds.selectedFeedArticles == null) return;
+    var pocketButton = $(this);
+    var saveArticle = pocketButton.parents('tr').attr('data-article-id');
+    pocketButton.text('saving');
+
+    console.log('saving article '+saveArticle+' to pocket');
+    saveArticleIdToPocket(saveArticle, function () {
+        pocketButton.text('saved');
+        console.log('saved article ' + saveArticle + ' to pocket, now marking as read');
+        markArticleId(saveArticle, true, function () {
+            updateUI();
+        });
+    });
+}
+function saveArticleIdToPocket(articleId, onSaveCompleted) {
+    console.log('calling pocket api for article ' + articleId);
+    $.post(urls.pocket_api + '/' + articleId, function (result) {
+        console.log('pocket api completed for article ' + articleId + ': ' + result.saved);
+        if (onSaveCompleted != undefined && onSaveCompleted != null)
+            onSaveCompleted(articleId);
     });
 }
 function toggleArticleRead() {
@@ -208,6 +232,7 @@ function updateSelectedArticle() {
     $('.feed-title').click(backToFeedArticles);
     $('button.toggle-read').click(toggleSelectedArticleRead);
     $('.next-article').click(markCurrentlySelectedArticleAsRead);
+    $('button.send-to-pocket').click(saveCurrentlySelectedArticleToPocket);
 }
 function buildFeedArticle() {
     var articleSummary = null;
@@ -322,9 +347,11 @@ function markArticleId(articleId, read, markedAsReadCompleted) {
     }
 }
 function markCurrentlySelectedArticleAsRead() {
-    console.log('marking story as read: ' + feeds.selectedFeedArticle.id);
-
-    markArticleId(feeds.selectedFeedArticle.id, true, function (unreadArticle) {
+    markArticleIdAsReadAndMoveToNext(feeds.selectedFeedArticle.id);
+}
+function markArticleIdAsReadAndMoveToNext(articleId) {
+    console.log('marking story as read: ' + articleId);
+    markArticleId(articleId, true, function (unreadArticle) {
         if (unreadArticle != null) {
             console.log('show next article: ' + unreadArticle.story);
             handleArticleClicked(unreadArticle.story);
@@ -334,8 +361,36 @@ function markCurrentlySelectedArticleAsRead() {
         }
     });
 }
+function saveCurrentlySelectedArticleToPocket() {
+    var articleId = feeds.selectedFeedArticle.id;
+    console.log('save story to pocket: ' + articleId);
+
+    saveArticleIdToPocket(articleId, function () {
+        markArticleIdAsReadAndMoveToNext(articleId);
+    });
+}
+function markCurrentlyFocusedArticleAsRead(focusNextArticle) {
+    if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
+        markArticleId(feeds.focusedArticle.story, true, function () {
+            updateUI();
+            if (focusNextArticle)
+                focusArticle(true);
+        });
+    }
+}
+function saveCurrentlyFocusedArticleToPocket() {
+    if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
+        var articleId = feeds.focusedArticle.story;
+        saveArticleIdToPocket(articleId, function () {
+            markArticleId(articleId, true, function () {
+                updateUI();
+                focusArticle(true);
+            });
+        });
+    }
+}
 function handleKeyPress(evt) {
-    console.log('handle key: ' + evt.which);
+    //console.log('handle key: ' + evt.which);
 
     if (feeds.selectedFeedArticle != null) {
         if (evt.which == 65 || evt.which == 82 || evt.which == 78) {
@@ -353,6 +408,7 @@ function handleKeyPress(evt) {
             markArticleId(feeds.selectedFeedArticle.id, false, function () { updateUI(); });
         } else if (evt.which == 80) {
             // 'p' adds the article to pocket
+            saveArticleIdToPocket(feeds.selectedFeedArticle.id, function () { markCurrentlySelectedArticleAsRead(); });
         }
 
         return;
@@ -371,16 +427,8 @@ function handleKeyPress(evt) {
             evt.preventDefault();
             focusArticle(false);
         } else if (evt.which == 65 || evt.which == 82 || evt.which == 78) {
-            // 'a' or 'r' or 'n' mark the focused article
-            // as read
-            if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
-                markArticleId(feeds.focusedArticle.story, true, function () {
-                    updateUI();
-                    // 'n' also moves us down to the next article
-                    if (evt.which == 78)
-                        focusArticle(true);
-                });
-            }
+            // 'a' or 'r' or 'n' mark the focused article as read
+            markCurrentlyFocusedArticleAsRead(evt.which == 78);
         } else if (evt.which == 85) {
             // 'u' marks the focused article as unread
             if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
@@ -390,6 +438,7 @@ function handleKeyPress(evt) {
             }
         } else if (evt.which == 80) {
             // 'p' adds the focused article to pocket and then marks as read
+            saveCurrentlyFocusedArticleToPocket();
         } else if (evt.which == 77) {
             // 'm' marks all the articles as read
         } else if (evt.which == 13) {
