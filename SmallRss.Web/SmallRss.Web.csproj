@@ -238,6 +238,7 @@
     <Compile Include="Controllers\RssController.cs" />
     <Compile Include="Controllers\UserLayoutController.cs" />
     <Compile Include="Models\Home\LoginViewModel.cs" />
+    <Compile Include="Models\PocketViewModel.cs" />
     <Compile Include="Models\UserLayoutViewModel.cs" />
     <Compile Include="Service References\ServiceApi\Reference.cs">
       <AutoGen>True</AutoGen>

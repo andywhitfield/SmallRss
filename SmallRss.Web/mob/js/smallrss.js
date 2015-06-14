@@ -189,7 +189,7 @@ function saveArticleToPocket() {
 }
 function saveArticleIdToPocket(articleId, onSaveCompleted) {
     console.log('calling pocket api for article ' + articleId);
-    $.post(urls.pocket_api + '/' + articleId, function (result) {
+    $.post(urls.pocket_api, { articleId: articleId }, function (result) {
         console.log('pocket api completed for article ' + articleId + ': ' + result.saved);
         if (onSaveCompleted != undefined && onSaveCompleted != null)
             onSaveCompleted(articleId);

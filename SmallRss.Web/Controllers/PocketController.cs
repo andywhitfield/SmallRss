@@ -27,8 +27,8 @@ namespace SmallRss.Web.Controllers
             this.datastore = datastore;
         }
 
-        // POST api/pocket/5
-        public object Post(int id)
+        // POST api/pocket
+        public object Post(PocketViewModel model)
         {
             var userAccount = this.CurrentUser(datastore);
             if (!userAccount.HasPocketAccessToken)
@@ -36,7 +36,11 @@ namespace SmallRss.Web.Controllers
                 return new { saved = false, reason = "Your account is not connected to Pocket." };
             }
 
-            var article = datastore.Load<Article>(id);
+            var article = datastore.Load<Article>(model.ArticleId.GetValueOrDefault());
+            if (article == null)
+            {
+                return new { saved = false, reason = "Could not find article with id " + model.ArticleId };
+            }
             
             var requestJson = "{\"consumer_key\":\"" + ManageController.PocketConsumerKey +
                 "\", \"access_token\":\"" + userAccount.PocketAccessToken +
