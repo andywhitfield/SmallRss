@@ -17,7 +17,7 @@ namespace SmallRss.Web.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        private const string consumerKey = "41619-1a5decf504173a588fd1b492";
+        internal const string PocketConsumerKey = "41619-1a5decf504173a588fd1b492";
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageController));
 
@@ -151,7 +151,7 @@ namespace SmallRss.Web.Controllers
             }
 
             var redirectUri = Url.Action("PocketAuth", "Manage", routeValues: null, protocol: Request.Url.Scheme);
-            var requestJson = "{\"consumer_key\":\"" + consumerKey + "\", \"redirect_uri\":\"" + redirectUri + "\"}";
+            var requestJson = "{\"consumer_key\":\"" + PocketConsumerKey + "\", \"redirect_uri\":\"" + Url.Encode(redirectUri) + "\"}";
 
             var webClient = new WebClient();
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=UTF-8");
@@ -174,7 +174,7 @@ namespace SmallRss.Web.Controllers
         public ActionResult PocketAuth()
         {
             var code = Session["POCKET_CODE"];
-            var requestJson = "{\"consumer_key\":\"" + consumerKey + "\", \"code\":\"" + code + "\"}";
+            var requestJson = "{\"consumer_key\":\"" + PocketConsumerKey + "\", \"code\":\"" + code + "\"}";
 
             var webClient = new WebClient();
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=UTF-8");

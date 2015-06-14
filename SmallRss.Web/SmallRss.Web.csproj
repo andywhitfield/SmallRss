@@ -229,6 +229,7 @@
     <Compile Include="Areas\Mobile\Models\User\ArticleViewModel.cs" />
     <Compile Include="Areas\Mobile\Models\User\FeedViewModel.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\PocketController.cs" />
     <Compile Include="Models\ControllerExtensions.cs" />
     <Compile Include="Controllers\FeedStatusController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
