@@ -32,6 +32,7 @@ tr.article { vertical-align: top; }
 	.article-summary { display: none; }
 }
 .article-marked-read td { font-size: 10pt; color: #666666; }
+.show-all-articles { margin: 10px 0 10px 0; }
 			
-.article-actions { float: right; }
+.article-actions { float: right; padding: 0 0 10px 0; }
 div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #0000bc; border-top: 2px solid #0000bc; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }

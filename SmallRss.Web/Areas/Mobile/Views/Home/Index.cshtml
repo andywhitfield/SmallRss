@@ -2,6 +2,11 @@
 <section name="GroupsSection"></section>
 <section name="SelectedFeedSection"></section>
 <section name="SelectedArticleSection"></section>
+@section HeaderScripts {
+    <script type="text/javascript">
+        var showingAllArticles = @(Model.ShowAllArticles.ToString().ToLower());
+    </script>
+}
 @section Scripts {
     <script type="text/javascript">
         $(function () {

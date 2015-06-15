@@ -140,6 +140,7 @@ function updateSelectedFeed() {
     $('tbody > tr > td.article-read button').click(toggleArticleRead);
     $('thead > tr > td.article-read button').click(markAllArticlesRead);
     $('.article-pocket button').click(saveArticleToPocket);
+    $('button.show-all-articles').click(showAllArticles);
 }
 function buildFeedArticles() {
     var feedHtml = '<div class="feed-title">' + feeds.selectedFeedGroup.item + ' &gt; ' + feeds.selectedFeed.item + ' (' + feeds.selectedFeed.count + ')</div>';
@@ -156,8 +157,17 @@ function buildFeedArticles() {
         feedHtml += '</tr>';
     });
     feedHtml += '</tbody></table>';
-    feedHtml += '<div><button>Show all articles</button></div>';
+    feedHtml += '<div><button class="show-all-articles">' + (showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button></div>';
     return feedHtml;
+}
+function showAllArticles() {
+    console.log('toggle showing all articles');
+    showingAllArticles = !showingAllArticles;
+    $(this).text(showingAllArticles ? 'Show unread articles' : 'Show all articles');
+    $.post(urls.feedstatus_api, { showall: showingAllArticles }, function () {
+        if (feeds.selectedFeed == null || feeds.selectedFeedGroup == null) return;
+        loadArticlesForFeedAndGroup(feeds.selectedFeed, feeds.selectedFeedGroup);
+    });
 }
 function showArticle() {
     var clickedArticle = $(this).parent('tr').attr('data-article-id');
@@ -301,6 +311,10 @@ function handleFeedClicked(feedElement) {
     if (group == null) return;
     var feed = findItemInGroup(group, feedElement.attr('id'));
     if (feed == null) return;
+
+    loadArticlesForFeedAndGroup(feed, group);
+}
+function loadArticlesForFeedAndGroup(feed, group) {
     console.log('feed clicked: #' + feed.id + '=' + feed.item + ' (group#' + group.id + '=' + group.item + ')');
 
     $.getJSON(urls.feed_api + "/" + feed.id + "?offset=" + getUtcOffset(), function (data) {

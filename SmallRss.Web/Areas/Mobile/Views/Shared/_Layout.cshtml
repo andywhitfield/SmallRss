@@ -13,6 +13,7 @@
                 pocket_api: '/api/pocket', // '@Url.Action("pocket", "api")'
             };
         </script>
+        @RenderSection("HeaderScripts", required: false)
 
         @Styles.Render("~/mob/css/allcss")
         @Scripts.Render("~/mob/js/alljs")
