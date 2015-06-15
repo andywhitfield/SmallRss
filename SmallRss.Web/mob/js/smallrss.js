@@ -467,6 +467,7 @@ function handleKeyPress(evt) {
             saveCurrentlyFocusedArticleToPocket();
         } else if (evt.which == 77) {
             // 'm' marks all the articles as read
+            markAllArticlesRead();
         } else if (evt.which == 13) {
             // 'return' shows the focused article
             if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
