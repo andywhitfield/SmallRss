@@ -137,7 +137,8 @@ function updateSelectedFeed() {
     feeds.selectedFeedSection.append(buildFeedArticles());
     $('.feed-title').click(backToAllFeeds);
     $('.article-title, .article-summary, .article-date').click(showArticle);
-    $('.article-read button').click(toggleArticleRead);
+    $('tbody > tr > td.article-read button').click(toggleArticleRead);
+    $('thead > tr > td.article-read button').click(markAllArticlesRead);
     $('.article-pocket button').click(saveArticleToPocket);
 }
 function buildFeedArticles() {
@@ -194,6 +195,31 @@ function saveArticleIdToPocket(articleId, onSaveCompleted) {
         if (onSaveCompleted != undefined && onSaveCompleted != null)
             onSaveCompleted(articleId);
     });
+}
+function markAllArticlesRead() {
+    console.log('mark all articles read');
+    if (feeds.selectedFeedArticles == null) return;
+
+    var maxArticleId = 0;
+    var serverUpdateRequired = false;
+    for (var i = 0; i < feeds.selectedFeedArticles.length; i++) {
+        var feedArticle = feeds.selectedFeedArticles[i];
+        if (feedArticle.story > maxArticleId) maxArticleId = feedArticle.story;
+
+        if (!feedArticle.read) {
+            feedArticle.read = true;
+            serverUpdateRequired = true;
+        }
+    }
+    if (serverUpdateRequired) {
+        $.post(urls.article_api, { feed: feeds.selectedFeed.id, read: true, maxStory: maxArticleId, offset: getUtcOffset() }, function () {
+            console.log('marked all articles read');
+            feeds.selectedFeed.count = 0;
+            updateUI();
+        });
+    } else {
+        console.log('all articles already read, nothing to do');
+    }
 }
 function toggleArticleRead() {
     if (feeds.selectedFeedArticles == null) return;
