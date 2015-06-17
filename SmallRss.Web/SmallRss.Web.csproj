@@ -275,6 +275,10 @@
     <Content Include="Areas\Mobile\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Mobile\Views\_ViewStart.cshtml" />
     <Content Include="mob\css\smallrss.css" />
+    <Content Include="mob\image\markread.png" />
+    <Content Include="mob\image\markunread.png" />
+    <Content Include="mob\image\next.png" />
+    <Content Include="mob\image\pocket.png" />
     <Content Include="mob\image\smallrss.png" />
     <Content Include="mob\js\jquery-1.9.1.min.map" />
     <Content Include="Areas\Mobile\Views\Home\Index.cshtml" />

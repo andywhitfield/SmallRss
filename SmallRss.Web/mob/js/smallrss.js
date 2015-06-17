@@ -145,15 +145,15 @@ function updateSelectedFeed() {
 function buildFeedArticles() {
     var feedHtml = '<div class="feed-title">' + feeds.selectedFeedGroup.item + ' &gt; ' + feeds.selectedFeed.item + ' (' + feeds.selectedFeed.count + ')</div>';
     feedHtml += '<table class="article-list">';
-    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button>all</button></td></tr></thead>';
+    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button class="image"><img src="' + urls.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
     feedHtml += '<tbody>';
     $.each(feeds.selectedFeedArticles, function (articleIdx, article) {
         feedHtml += '<tr data-article-id="' + article.story + '" class="article' + (article.read ? ' article-marked-read' : '') + (feeds.focusedArticle != null && feeds.focusedArticle.story == article.story ? ' focused' : '') + '">';
         feedHtml += '<td class="article-title">' + article.heading + '</td>';
         feedHtml += '<td class="article-summary">' + article.article + '</td>';
         feedHtml += '<td class="article-date">' + article.posted + '</td>';
-        feedHtml += '<td class="article-pocket"><button>pocket</button></td>';
-        feedHtml += '<td class="article-read"><button>' + (article.read ? 'unread' : 'read') + '</button></td>';
+        feedHtml += '<td class="article-pocket"><button class="image"><img src="' + urls.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
+        feedHtml += '<td class="article-read"><button class="image">' + (article.read ? '<img src="' + urls.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + urls.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></td>';
         feedHtml += '</tr>';
     });
     feedHtml += '</tbody></table>';
@@ -185,13 +185,10 @@ function handleArticleClicked(clickedArticle) {
 }
 function saveArticleToPocket() {
     if (feeds.selectedFeedArticles == null) return;
-    var pocketButton = $(this);
-    var saveArticle = pocketButton.parents('tr').attr('data-article-id');
-    pocketButton.text('saving');
+    var saveArticle = $(this).parents('tr').attr('data-article-id');
 
-    console.log('saving article '+saveArticle+' to pocket');
+    console.log('saving article ' + saveArticle + ' to pocket');
     saveArticleIdToPocket(saveArticle, function () {
-        pocketButton.text('saved');
         console.log('saved article ' + saveArticle + ' to pocket, now marking as read');
         markArticleId(saveArticle, true, function () {
             updateUI();
@@ -286,10 +283,10 @@ function buildFeedArticle() {
     articleHtml += '</div>';
 
     articleHtml += '<div>';
-    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions"><button class="send-to-pocket">pocket</button><button class="toggle-read">' + (articleSummary.read ? 'mark unread' : 'mark read') + '</button></span></div>';
+    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions"><button class="send-to-pocket image"><img src="' + urls.imageroot + 'image/pocket.png" alt="Send to Pocket"></button><button class="toggle-read image">' + (articleSummary.read ? '<img src="' + urls.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + urls.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
     articleHtml += '<div class="article-heading"><a href="' + feeds.selectedFeedArticle.url + '" target="_blank">' + articleSummary.heading + '</a></div>';
     articleHtml += '<div>' + feeds.selectedFeedArticle.body + '</div>';
-    articleHtml += '<div><span class="article-actions"><button class="next-article">next &gt;</button></span></div>';
+    articleHtml += '<div><span class="article-actions"><button class="next-article image"><img src="'+urls.imageroot+'image/next.png" alt="Next article"></button></span></div>';
     articleHtml += '</div>';
 
     return articleHtml;
@@ -376,7 +373,7 @@ function markArticleId(articleId, read, markedAsReadCompleted) {
     feeds.selectedFeed.count = unreadCount;
 
     if (serverUpdateRequired) {
-        console.log('letting server know that story '+articleId+' should be marked read/unread: '+read);
+        console.log('letting server know that story ' + articleId + ' should be marked read/unread: ' + read);
         $.post(urls.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: read }, function () {
             if (markedAsReadCompleted != undefined && markedAsReadCompleted != null)
                 markedAsReadCompleted(unreadArticle);

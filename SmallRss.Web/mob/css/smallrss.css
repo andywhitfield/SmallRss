@@ -1,38 +1,42 @@
 ﻿body, li, div, span, a, td, button { font-family: sans-serif; font-size: 11pt; }
+a, a:active, a:link, a:visited, a:hover { color: #000000; }
+a:hover { text-decoration: none; }
 
 header h1 { float: left; font-size: 14pt; padding: 5px 5px 0 0; margin: 0; }
 header span.actions { float: right; }
 header { clear: both; margin: 5px 5px 5px 0px }
 
-.focused { border-width: 2px; border-style: dotted; border-color: #0000bc; }
-.focused td { border-top-width: 2px; border-top-style: dotted; border-top-color: #0000bc; border-bottom-width: 2px; border-bottom-style: dotted; border-bottom-color: #0000bc; }
+.focused { border-width: 2px; border-style: dotted; border-color: #baddff; }
+.focused td { border-top-width: 2px; border-top-style: dotted; border-top-color: #baddff; border-bottom-width: 2px; border-bottom-style: dotted; border-bottom-color: #baddff; }
 
-.group-section div, .feed-title { font-size: 13pt; border: 1px solid; padding: 2px; background-color: #0000bc; color: #ffffff; font-weight: bold; cursor: default; }
+.group-section div, .feed-title { font-size: 13pt; margin-bottom: 3px; padding: 2px; background-color: #baddff; font-weight: bold; cursor: default; }
 ul.feed-list { list-style-type: none; padding: 0 0 0 0; margin: 5px 0 20px 0; }
-.feed-list li { margin: 2px; padding: 3px; background-color: #cce4fc; }
-.feed-list li:hover { color: #0000bc; }
+.feed-list li { margin: 2px; padding: 3px; color: #444444; background-color: #f2f9ff; cursor: default; }
+.feed-list li:hover { color: #000000; }
 .feed-list li[data-count="0"] { font-weight: 100; }
 
 table.article-list { width: 100%; }
-.article-list td { background-color: #cce4fc; }
-.article-list thead td { font-size: 13pt; font-weight: bold; border-bottom: 2px solid #0000bc; }
+.article-list td { color: #444444; background-color: #f2f9ff; }
+.article-list thead td { font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; }
 .article-list tbody tr { cursor: default; }
-.article-list tbody tr:hover { color: #0000bc; }
+.article-list tbody tr:hover td { color: #000000; }
 			
 tr.article { vertical-align: top; }
 .article-title { min-width: 30%; }
 .article-summary { min-width: 70%; }
 .article-date { min-width: 70px; }
-.article-pocket { min-width: 70px; text-align: center; }
-.article-read { min-width: 70px; text-align: center; }
+.article-pocket { min-width: 32px; text-align: center; }
+.article-read { min-width: 32px; text-align: center; }
 @media screen and (max-width: 700px) {
 	.article-date { display: none; }
 }
 @media screen and (max-width: 550px) {
 	.article-summary { display: none; }
 }
-.article-marked-read td { font-size: 10pt; color: #666666; }
+.article-marked-read td { color: #aaaaaa; }
 .show-all-articles { margin: 10px 0 10px 0; }
 			
 .article-actions { float: right; padding: 0 0 10px 0; }
-div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #0000bc; border-top: 2px solid #0000bc; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }
+div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; border-top: 2px solid #baddff; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }
+
+button.image { background-color: transparent; cursor: pointer; margin: 0; padding: 0; border: 0; }
