@@ -180,6 +180,8 @@ function handleArticleClicked(clickedArticle) {
         feeds.selectedFeedArticle = data;
         markArticleId(clickedArticle, true, function () {
             updateUI();
+            // and scroll to the top
+            $(window).scrollTop(0);
         });
     });
 }

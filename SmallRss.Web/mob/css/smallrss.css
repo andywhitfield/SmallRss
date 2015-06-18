@@ -13,7 +13,7 @@ header { clear: both; margin: 5px 5px 5px 0px }
 ul.feed-list { list-style-type: none; padding: 0 0 0 0; margin: 5px 0 20px 0; }
 .feed-list li { margin: 2px; padding: 3px; color: #444444; background-color: #f2f9ff; cursor: default; }
 .feed-list li:hover { color: #000000; }
-.feed-list li[data-count="0"] { font-weight: 100; }
+.feed-list li[data-count="0"] { color: #aaaaaa; }
 
 table.article-list { width: 100%; }
 .article-list td { color: #444444; background-color: #f2f9ff; }
@@ -33,7 +33,7 @@ tr.article { vertical-align: top; }
 @media screen and (max-width: 550px) {
 	.article-summary { display: none; }
 }
-.article-marked-read td { color: #aaaaaa; }
+.article-marked-read td, tr.article-marked-read:hover { color: #aaaaaa !important; }
 .show-all-articles { margin: 10px 0 10px 0; }
 			
 .article-actions { float: right; padding: 0 0 10px 0; }
