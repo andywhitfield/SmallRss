@@ -26,42 +26,56 @@ function buildTreeFromFeeds() {
     feeds.allGroupsSection = $('section[name="GroupsSection"]');
     feeds.selectedFeedSection = $('section[name="SelectedFeedSection"]');
     feeds.selectedArticleSection = $('section[name="SelectedArticleSection"]');
-    $.each(feeds, function (key, val) {
-        var newSection = '<section id="' + val.id + '" data-count="0" class="group-section"><div>';
-        newSection += val.item;
+    for (var i = 0; i < feeds.length; i++) {
+        var group = feeds[i];
+        var newSection = '<section id="' + group.id + '" data-count="0" class="group-section"><div>';
+        newSection += group.item;
         newSection += ' <span class="group-unread-count"></span></div>';
-        newSection += buildItemsFromFeed(val);
+        newSection += buildItemsFromFeed(group);
         newSection += '</section>';
         feeds.allGroupsSection.append(newSection);
-    });
+    }
     $('.group-section div', feeds.allGroupsSection).click(toggleShowAll);
     $('.feed-list li', feeds.allGroupsSection).click(onFeedClicked);
 }
 function buildItemsFromFeed(feed) {
     var itemsHtml = '<article><ul class="feed-list">';
-    $.each(feed.items, function (key, val) {
-        itemsHtml += '<li id="' + val.id + '" data-count="0">';
-        itemsHtml += val.item;
+    for (var i = 0; i < feed.items.length; i++) {
+        var group = feed.items[i];
+        itemsHtml += '<li id="' + group.id + '" data-count="0">';
+        itemsHtml += group.item;
         itemsHtml += ' <span class="item-unread-count"></span>';
         itemsHtml += '</li>';
-    });
+    }
     itemsHtml += '</ul></article>';
     return itemsHtml;
 }
 function refreshFeedCounts(onRefreshCompleteFunc) {
     console.log('refreshing feed count');
     $.getJSON(urls.feedstatus_api, function (data) {
-        $.each(data, function (groupKey, group) {
+        // reset all groups & item counts to zero
+        for (var grpIdx = 0; grpIdx < feeds.length; grpIdx++) {
+            var group = feeds[grpIdx];
+            group.count = 0;
+            for (var itmIdx = 0; itmIdx < group.items.length; itmIdx++) {
+                var item = group.items[itmIdx];
+                item.count = 0;
+            }
+        }
+        // now update from the received status
+        for (var grpIdx = 0; grpIdx < data.length; grpIdx++) {
+            var group = data[grpIdx];
             var feedGroup = findGroup(group.label);
             if (feedGroup == null) return;
             feedGroup.count = group.unread;
 
-            $.each(group.items, function (itemKey, item) {
+            for (var itmIdx = 0; itmIdx < group.items.length; itmIdx++) {
+                var item = group.items[itmIdx];
                 var feedItem = findItemInGroup(feedGroup, item.value);
                 if (feedItem == null) return;
                 feedItem.count = item.unread;
-            });
-        });
+            }
+        }
         console.log('feed counts updated; updating UI');
         updateUI();
 
@@ -103,7 +117,8 @@ function updateUI() {
     feeds.allGroupsSection.show();
 }
 function updateFeedGroups() {
-    $.each(feeds, function (groupIdx, feedGroup) {
+    for (var grpIdx = 0; grpIdx < feeds.length; grpIdx++) {
+        var feedGroup = feeds[grpIdx];
         if (feedGroup.count == undefined) feedGroup.count = 0;
 
         var groupSection = $('section[id="' + feedGroup.id + '"]', feeds.allGroupsSection);
@@ -113,7 +128,8 @@ function updateFeedGroups() {
         else unreadCount.text('(' + feedGroup.count + ')');
 
         // and the items
-        $.each(feedGroup.items, function (feedItemIdx, feedItem) {
+        for (var itmIdx = 0; itmIdx < feedGroup.items.length; itmIdx++) {
+            var feedItem = feedGroup.items[itmIdx];
             if (feedItem.count == undefined) feedItem.count = 0;
 
             var feedListItem = $('li[id="' + feedItem.id + '"]', groupSection);
@@ -121,13 +137,19 @@ function updateFeedGroups() {
             var unreadCount = $('.item-unread-count', feedListItem);
             if (feedItem.count == 0) unreadCount.text('');
             else unreadCount.text('(' + feedItem.count + ')');
-        });
-    });
+        }
+    }
 
-    if (localSettings.showAll) {
-        $('section[data-count="0"]', feeds.allGroupsSection).children('article').show();
-        $('li[data-count="0"]', feeds.allGroupsSection).show();
-    } else {
+    // show all groups and items
+    $('section', feeds.allGroupsSection).children('article').show();
+    $('li', feeds.allGroupsSection).show();
+
+    // then hide those that have no unread articles, if we're not showing all
+    // TODO: This has the unfortunate affect of causing them all to show then shrink
+    //       again, which isn't great. But this does fix the issue where new unread
+    //       articles arrive for previously hidden sections and the section remains
+    //       collapsed.
+    if (!localSettings.showAll) {
         $('section[data-count="0"]', feeds.allGroupsSection).children('article').hide();
         $('li[data-count="0"]', feeds.allGroupsSection).hide();
     }
@@ -147,7 +169,8 @@ function buildFeedArticles() {
     feedHtml += '<table class="article-list">';
     feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button class="image"><img src="' + urls.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
     feedHtml += '<tbody>';
-    $.each(feeds.selectedFeedArticles, function (articleIdx, article) {
+    for (var i = 0; i < feeds.selectedFeedArticles.length; i++) {
+        var article = feeds.selectedFeedArticles[i];
         feedHtml += '<tr data-article-id="' + article.story + '" class="article' + (article.read ? ' article-marked-read' : '') + (feeds.focusedArticle != null && feeds.focusedArticle.story == article.story ? ' focused' : '') + '">';
         feedHtml += '<td class="article-title">' + article.heading + '</td>';
         feedHtml += '<td class="article-summary">' + article.article + '</td>';
@@ -155,7 +178,7 @@ function buildFeedArticles() {
         feedHtml += '<td class="article-pocket"><button class="image"><img src="' + urls.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
         feedHtml += '<td class="article-read"><button class="image">' + (article.read ? '<img src="' + urls.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + urls.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></td>';
         feedHtml += '</tr>';
-    });
+    }
     feedHtml += '</tbody></table>';
     feedHtml += '<div><button class="show-all-articles">' + (showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button></div>';
     return feedHtml;
@@ -516,19 +539,19 @@ function handleKeyPress(evt) {
 
 function focusNextFeed() {
     focusFeed(
-        function (feeds) { return 0; },
-        function (feeds, groupIdx) { return groupIdx < feeds.length; },
-        function (groupIdx) { return groupIdx + 1; },
-        function (groupItems) { return 0; },
-        function (groupItems, feedIdx) { return feedIdx < groupItems.length; },
+        function (f) { return 0; },
+        function (f, grpIdx) { return grpIdx < f.length; },
+        function (grpIdx) { return grpIdx + 1; },
+        function (grpItems) { return 0; },
+        function (grpItems, feedIdx) { return feedIdx < grpItems.length; },
         function (feedIdx) { return feedIdx + 1; }
     );
 }
 function focusPreviousFeed() {
     focusFeed(
-        function (feeds) { return feeds.length - 1; },
-        function (feeds, groupIdx) { return groupIdx >= 0; },
-        function (groupIdx) { return groupIdx - 1; },
+        function (f) { return f.length - 1; },
+        function (f, grpItems) { return grpItems >= 0; },
+        function (grpItems) { return grpItems - 1; },
         function (groupItems) { return groupItems.length - 1; },
         function (groupItems, feedIdx) { return feedIdx >= 0; },
         function (feedIdx) { return feedIdx - 1; }
