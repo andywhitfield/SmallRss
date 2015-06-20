@@ -6,19 +6,9 @@
         <link rel="icon" href="@Url.Content("~/mob/image/smallrss.png")" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="@Url.Content("~/mob/image/smallrss.png")" sizes="32x32" />
         <title>SmallRss</title>
-        <script type="text/javascript">
-            var smallrss_config = {
-                feedstatus_api: '/api/feedstatus', // '@Url.Action("feedstatus", "api")',
-                article_api: '/api/article', // '@Url.Action("article", "api")',
-                feed_api: '/api/feed', // '@Url.Action("feed", "api")'
-                pocket_api: '/api/pocket', // '@Url.Action("pocket", "api")'
-                imageroot: '/mob/',
-            };
-        </script>
-        @RenderSection("HeaderScripts", required: false)
-
         @Styles.Render("~/mob/css/allcss")
         @Scripts.Render("~/mob/js/alljs")
+        @RenderSection("HeaderScripts", required: false)
     </head>
     <body>
         <header>

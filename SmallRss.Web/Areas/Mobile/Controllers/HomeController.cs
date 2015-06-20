@@ -22,7 +22,11 @@ namespace SmallRss.Web.Areas.Mobile.Controllers
                 new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
             var loggedInUser = this.CurrentUser(datastore);
-            return View(new IndexViewModel { ShowAllArticles = loggedInUser.ShowAllItems });
+            return View(new IndexViewModel
+            {
+                ShowAllArticles = loggedInUser.ShowAllItems,
+                ConnectedToPocket = loggedInUser.HasPocketAccessToken
+            });
         }
     }
 }

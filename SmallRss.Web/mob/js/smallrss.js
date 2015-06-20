@@ -161,13 +161,13 @@ function updateSelectedFeed() {
     $('.article-title, .article-summary, .article-date').click(showArticle);
     $('tbody > tr > td.article-read button').click(toggleArticleRead);
     $('thead > tr > td.article-read button').click(markAllArticlesRead);
-    $('.article-pocket button').click(saveArticleToPocket);
     $('button.show-all-articles').click(showAllArticles);
+    if (smallrss_config.connectedToPocket) $('.article-pocket button').click(saveArticleToPocket);
 }
 function buildFeedArticles() {
     var feedHtml = '<div class="feed-title">' + feeds.selectedFeedGroup.item + ' &gt; ' + feeds.selectedFeed.item + ' (' + feeds.selectedFeed.count + ')</div>';
     feedHtml += '<table class="article-list">';
-    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button class="image"><img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
+    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td>'+(smallrss_config.connectedToPocket ? '<td class="article-pocket">&nbsp;</td>' : '')+'<td class="article-read"><button class="image"><img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
     feedHtml += '<tbody>';
     for (var i = 0; i < feeds.selectedFeedArticles.length; i++) {
         var article = feeds.selectedFeedArticles[i];
@@ -175,19 +175,20 @@ function buildFeedArticles() {
         feedHtml += '<td class="article-title">' + article.heading + '</td>';
         feedHtml += '<td class="article-summary">' + article.article + '</td>';
         feedHtml += '<td class="article-date">' + article.posted + '</td>';
-        feedHtml += '<td class="article-pocket"><button class="image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
+        if (smallrss_config.connectedToPocket)
+            feedHtml += '<td class="article-pocket"><button class="image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
         feedHtml += '<td class="article-read"><button class="image">' + (article.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></td>';
         feedHtml += '</tr>';
     }
     feedHtml += '</tbody></table>';
-    feedHtml += '<div><button class="show-all-articles">' + (showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button></div>';
+    feedHtml += '<div><button class="show-all-articles">' + (smallrss_config.showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button></div>';
     return feedHtml;
 }
 function showAllArticles() {
     console.log('toggle showing all articles');
-    showingAllArticles = !showingAllArticles;
-    $(this).text(showingAllArticles ? 'Show unread articles' : 'Show all articles');
-    $.post(smallrss_config.feedstatus_api, { showall: showingAllArticles }, function () {
+    smallrss_config.showingAllArticles = !smallrss_config.showingAllArticles;
+    $(this).text(smallrss_config.showingAllArticles ? 'Show unread articles' : 'Show all articles');
+    $.post(smallrss_config.feedstatus_api, { showall: smallrss_config.showingAllArticles }, function () {
         if (feeds.selectedFeed == null || feeds.selectedFeedGroup == null) return;
         loadArticlesForFeedAndGroup(feeds.selectedFeed, feeds.selectedFeedGroup);
     });
@@ -209,7 +210,7 @@ function handleArticleClicked(clickedArticle) {
     });
 }
 function saveArticleToPocket() {
-    if (feeds.selectedFeedArticles == null) return;
+    if (feeds.selectedFeedArticles == null || !smallrss_config.connectedToPocket) return;
     var saveArticle = $(this).parents('tr').attr('data-article-id');
 
     console.log('saving article ' + saveArticle + ' to pocket');
@@ -290,7 +291,7 @@ function updateSelectedArticle() {
     $('.feed-title').click(backToFeedArticles);
     $('button.toggle-read').click(toggleSelectedArticleRead);
     $('.next-article').click(markCurrentlySelectedArticleAsRead);
-    $('button.send-to-pocket').click(saveCurrentlySelectedArticleToPocket);
+    if (smallrss_config.connectedToPocket) $('button.send-to-pocket').click(saveCurrentlySelectedArticleToPocket);
 }
 function buildFeedArticle() {
     var articleSummary = null;
@@ -308,7 +309,7 @@ function buildFeedArticle() {
     articleHtml += '</div>';
 
     articleHtml += '<div>';
-    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions"><button class="send-to-pocket image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Send to Pocket"></button><button class="toggle-read image">' + (articleSummary.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
+    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions">'+(smallrss_config.connectedToPocket ? '<button class="send-to-pocket image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Send to Pocket"></button>' : '')+'<button class="toggle-read image">' + (articleSummary.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
     articleHtml += '<div class="article-heading"><a href="' + feeds.selectedFeedArticle.url + '" target="_blank">' + articleSummary.heading + '</a></div>';
     articleHtml += '<div>' + feeds.selectedFeedArticle.body + '</div>';
     articleHtml += '<div><span class="article-actions"><button class="next-article image"><img src="'+smallrss_config.imageroot+'image/next.png" alt="Next article"></button></span></div>';
@@ -424,6 +425,7 @@ function markArticleIdAsReadAndMoveToNext(articleId) {
     });
 }
 function saveCurrentlySelectedArticleToPocket() {
+    if (!smallrss_config.connectedToPocket) return;
     var articleId = feeds.selectedFeedArticle.id;
     console.log('save story to pocket: ' + articleId);
 
@@ -441,6 +443,7 @@ function markCurrentlyFocusedArticleAsRead(focusNextArticle) {
     }
 }
 function saveCurrentlyFocusedArticleToPocket() {
+    if (!smallrss_config.connectedToPocket) return;
     if (feeds.focusedArticle != undefined && feeds.focusedArticle != null) {
         var articleId = feeds.focusedArticle.story;
         saveArticleIdToPocket(articleId, function () {
