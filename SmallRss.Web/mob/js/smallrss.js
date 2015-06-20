@@ -52,7 +52,7 @@ function buildItemsFromFeed(feed) {
 }
 function refreshFeedCounts(onRefreshCompleteFunc) {
     console.log('refreshing feed count');
-    $.getJSON(urls.feedstatus_api, function (data) {
+    $.getJSON(smallrss_config.feedstatus_api, function (data) {
         // reset all groups & item counts to zero
         for (var grpIdx = 0; grpIdx < feeds.length; grpIdx++) {
             var group = feeds[grpIdx];
@@ -167,7 +167,7 @@ function updateSelectedFeed() {
 function buildFeedArticles() {
     var feedHtml = '<div class="feed-title">' + feeds.selectedFeedGroup.item + ' &gt; ' + feeds.selectedFeed.item + ' (' + feeds.selectedFeed.count + ')</div>';
     feedHtml += '<table class="article-list">';
-    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button class="image"><img src="' + urls.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
+    feedHtml += '<thead><tr><td class="article-title">Title</td><td class="article-summary">Summary</td><td class="article-date">Posted</td><td class="article-pocket">&nbsp;</td><td class="article-read"><button class="image"><img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark all as read"></button></td></tr></thead>';
     feedHtml += '<tbody>';
     for (var i = 0; i < feeds.selectedFeedArticles.length; i++) {
         var article = feeds.selectedFeedArticles[i];
@@ -175,8 +175,8 @@ function buildFeedArticles() {
         feedHtml += '<td class="article-title">' + article.heading + '</td>';
         feedHtml += '<td class="article-summary">' + article.article + '</td>';
         feedHtml += '<td class="article-date">' + article.posted + '</td>';
-        feedHtml += '<td class="article-pocket"><button class="image"><img src="' + urls.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
-        feedHtml += '<td class="article-read"><button class="image">' + (article.read ? '<img src="' + urls.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + urls.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></td>';
+        feedHtml += '<td class="article-pocket"><button class="image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Save to Pocket"></button></td>';
+        feedHtml += '<td class="article-read"><button class="image">' + (article.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></td>';
         feedHtml += '</tr>';
     }
     feedHtml += '</tbody></table>';
@@ -187,7 +187,7 @@ function showAllArticles() {
     console.log('toggle showing all articles');
     showingAllArticles = !showingAllArticles;
     $(this).text(showingAllArticles ? 'Show unread articles' : 'Show all articles');
-    $.post(urls.feedstatus_api, { showall: showingAllArticles }, function () {
+    $.post(smallrss_config.feedstatus_api, { showall: showingAllArticles }, function () {
         if (feeds.selectedFeed == null || feeds.selectedFeedGroup == null) return;
         loadArticlesForFeedAndGroup(feeds.selectedFeed, feeds.selectedFeedGroup);
     });
@@ -199,7 +199,7 @@ function showArticle() {
 }
 function handleArticleClicked(clickedArticle) {
     console.log('calling article.json for article ' + clickedArticle);
-    $.getJSON(urls.article_api + '/' + clickedArticle, function (data) {
+    $.getJSON(smallrss_config.article_api + '/' + clickedArticle, function (data) {
         feeds.selectedFeedArticle = data;
         markArticleId(clickedArticle, true, function () {
             updateUI();
@@ -222,7 +222,7 @@ function saveArticleToPocket() {
 }
 function saveArticleIdToPocket(articleId, onSaveCompleted) {
     console.log('calling pocket api for article ' + articleId);
-    $.post(urls.pocket_api, { articleId: articleId }, function (result) {
+    $.post(smallrss_config.pocket_api, { articleId: articleId }, function (result) {
         console.log('pocket api completed for article ' + articleId + ': ' + result.saved);
         if (onSaveCompleted != undefined && onSaveCompleted != null)
             onSaveCompleted(articleId);
@@ -244,7 +244,7 @@ function markAllArticlesRead() {
         }
     }
     if (serverUpdateRequired) {
-        $.post(urls.article_api, { feed: feeds.selectedFeed.id, read: true, maxStory: maxArticleId, offset: getUtcOffset() }, function () {
+        $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, read: true, maxStory: maxArticleId, offset: getUtcOffset() }, function () {
             console.log('marked all articles read');
             feeds.selectedFeed.count = 0;
             updateUI();
@@ -277,7 +277,7 @@ function toggleArticleIdRead(articleId) {
     feeds.selectedFeed.count = unreadCount;
 
     if (feedToUpdate != null) {
-        $.post(urls.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: feedToUpdate.read }, function () {
+        $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: feedToUpdate.read }, function () {
             updateUI();
         });
     } else {
@@ -308,10 +308,10 @@ function buildFeedArticle() {
     articleHtml += '</div>';
 
     articleHtml += '<div>';
-    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions"><button class="send-to-pocket image"><img src="' + urls.imageroot + 'image/pocket.png" alt="Send to Pocket"></button><button class="toggle-read image">' + (articleSummary.read ? '<img src="' + urls.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + urls.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
+    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions"><button class="send-to-pocket image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Send to Pocket"></button><button class="toggle-read image">' + (articleSummary.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
     articleHtml += '<div class="article-heading"><a href="' + feeds.selectedFeedArticle.url + '" target="_blank">' + articleSummary.heading + '</a></div>';
     articleHtml += '<div>' + feeds.selectedFeedArticle.body + '</div>';
-    articleHtml += '<div><span class="article-actions"><button class="next-article image"><img src="'+urls.imageroot+'image/next.png" alt="Next article"></button></span></div>';
+    articleHtml += '<div><span class="article-actions"><button class="next-article image"><img src="'+smallrss_config.imageroot+'image/next.png" alt="Next article"></button></span></div>';
     articleHtml += '</div>';
 
     return articleHtml;
@@ -339,7 +339,7 @@ function handleFeedClicked(feedElement) {
 function loadArticlesForFeedAndGroup(feed, group) {
     console.log('feed clicked: #' + feed.id + '=' + feed.item + ' (group#' + group.id + '=' + group.item + ')');
 
-    $.getJSON(urls.feed_api + "/" + feed.id + "?offset=" + getUtcOffset(), function (data) {
+    $.getJSON(smallrss_config.feed_api + "/" + feed.id + "?offset=" + getUtcOffset(), function (data) {
         feeds.selectedFeed = feed;
         feeds.selectedFeedGroup = group;
         feeds.selectedFeedArticles = data;
@@ -399,7 +399,7 @@ function markArticleId(articleId, read, markedAsReadCompleted) {
 
     if (serverUpdateRequired) {
         console.log('letting server know that story ' + articleId + ' should be marked read/unread: ' + read);
-        $.post(urls.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: read }, function () {
+        $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: read }, function () {
             if (markedAsReadCompleted != undefined && markedAsReadCompleted != null)
                 markedAsReadCompleted(unreadArticle);
         });

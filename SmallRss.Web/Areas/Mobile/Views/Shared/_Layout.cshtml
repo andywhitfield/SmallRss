@@ -3,12 +3,11 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="@Url.Content("~/mob/image/favicon.ico")" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="@Url.Content("~/mob/image/smallrss.png")" sizes="32x32" />
         <link rel="icon" href="@Url.Content("~/mob/image/smallrss.png")" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="@Url.Content("~/mob/image/smallrss.png")" sizes="32x32" />
         <title>SmallRss</title>
         <script type="text/javascript">
-            var urls = {
+            var smallrss_config = {
                 feedstatus_api: '/api/feedstatus', // '@Url.Action("feedstatus", "api")',
                 article_api: '/api/article', // '@Url.Action("article", "api")',
                 feed_api: '/api/feed', // '@Url.Action("feed", "api")'
