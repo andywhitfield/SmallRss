@@ -1,60 +1,21 @@
 ﻿@model SmallRss.Web.Models.Home.IndexViewModel
-<section id="mainPanel">
-<div id="mainSplitter">
-    <div id="splitWest">
-        <div id="feedTreeLoading" class="feedTreeAlt" data-bind="visible: loadingFeeds()">Please wait, loading...</div>
-        <div id="feedTreeNoSubscriptions" class="feedTreeAlt" data-bind="visible: !loadingFeeds() && !anyFeeds()">You don't yet have any feed subscriptions - <a href="@Url.Action("", "manage")">add some</a>!</div>
-        <div id="feedTree" class="aciTree" data-bind="visible: !loadingFeeds() && anyFeeds()"></div>
-    </div>
-    <div id="splitCenter">
-        <div id="splitNorth">
-            <div id="articleGridContainer" style="width: 97%; margin: 8px">
-                <div data-bind="visible: !isFeedSelected()">
-                    <em>No feed selected.</em>
-                </div>
-                <div data-bind="visible: isFeedSelected()">
-                    Show: <label for="showAllOrUnread_unread"> unread items </label><input type="radio" id="showAllOrUnread_unread" name="showAllOrUnread" value="unread"@if (!Model.ShowAllItems) { <text> checked="checked"</text>} />
-                    <label for="showAllOrUnread_all"> all items </label><input type="radio" id="showAllOrUnread_all" name="showAllOrUnread" value="all"@if (Model.ShowAllItems) { <text> checked="checked"</text>} />
-                    &nbsp;
-                    <input type="button" id="markAllRead" value="Mark all read" data-bind="visible: anyItemsInFeed()" />
-                </div>
-                <div data-bind="visible: isFeedSelected() && !anyItemsInFeed()">
-                    <p>
-                        <em>No items in the feed.</em>
-                    </p>
-                </div>
-                <div data-bind="visible: isFeedSelected() && anyItemsInFeed()"><table id="articleGrid"></table></div>
-            </div>
-        </div>
-        <div id="splitSouth">
-            <div id="articleContainer" data-bind="visible: !isArticleSelected()" style="width: 97%; margin: 8px">
-                <em>No article selected.</em>
-            </div>
-            <div id="articleBody" data-bind="visible: isArticleSelected" style="width: 97%; margin: 8px">
-                <p>
-                <a class="articleLink" href="#" target="_blank" data-bind="text: articleTitle, attr: { href: articleUrl }"></a>
-                </p>
-                <p><span data-bind="html: articleBody"></span></p>
-                <p class="articleActions">
-                    <input type="button" id="keepUnread" value="Keep unread" />
-                    <input type="button" id="openArticle" value="Open article" />
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-@section Scripts {
-    <script type="text/javascript">
-        @if (Model.SplitterWestPosition.HasValue) {
-        <text>
-        model.splitWestPosition = '@Model.SplitterWestPosition';
-        </text>
-        }
-        @if (Model.SplitterNorthPosition.HasValue) {
-        <text>
-        model.splitNorthPosition = '@Model.SplitterNorthPosition';
-        </text>
-        }
-    </script>
+<section name="GroupsSection"></section>
+<section name="SelectedFeedSection"></section>
+<section name="SelectedArticleSection"></section>
+@section HeaderScripts {
+<script type="text/javascript">
+    var smallrss_config = {
+        feedstatus_api: '/api/feedstatus', // '@Url.Action("feedstatus", "api")',
+        article_api: '/api/article', // '@Url.Action("article", "api")',
+        feed_api: '/api/feed', // '@Url.Action("feed", "api")'
+        pocket_api: '/api/pocket', // '@Url.Action("pocket", "api")'
+        imageroot: '@Url.Content("~/resource/")',
+        showingAllArticles: @(Model.ShowAllArticles.ToString().ToLower()),
+        connectedToPocket: @(Model.ConnectedToPocket.ToString().ToLower()),
+    };
+    $(function () {
+        loadLocalSettings();
+        $.getJSON(smallrss_config.feed_api, initialiseFeeds);
+    });
+</script>
 }

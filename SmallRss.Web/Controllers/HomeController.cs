@@ -30,24 +30,11 @@ namespace SmallRss.Web.Controllers
                 new Uri(Request.Url, Response.ApplyAppPathModifier("~/home/xrds")).AbsoluteUri);
 
             var currentUser = this.CurrentUser(datastore);
-            var vm = new IndexViewModel { ShowAllItems = currentUser.ShowAllItems };
-
-            Func<string, int?> setSplitterPosition = layoutKey =>
+            return View(new IndexViewModel
             {
-                string posString;
-                if (currentUser.SavedLayout.TryGetValue(layoutKey, out posString))
-                {
-                    int posInt;
-                    if (int.TryParse(posString, out posInt) && posInt > 0)
-                        return posInt;
-                }
-                return null;
-            };
-
-            vm.SplitterWestPosition = setSplitterPosition(UserLayoutViewModel.LayoutKeySplitWest);
-            vm.SplitterNorthPosition = setSplitterPosition(UserLayoutViewModel.LayoutKeySplitNorth);
-
-            return View(vm);
+                ShowAllArticles = currentUser.ShowAllItems,
+                ConnectedToPocket = currentUser.HasPocketAccessToken
+            });
         }
 
         public ActionResult Xrds() { return View(); }

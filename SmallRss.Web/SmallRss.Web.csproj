@@ -112,9 +112,6 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="FiftyOne.Foundation">
-      <HintPath>..\packages\51Degrees.mobi.2.1.15.1\lib\NET40\FiftyOne.Foundation.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -222,12 +219,6 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\Mobile\Controllers\HomeController.cs" />
-    <Compile Include="Areas\Mobile\Controllers\UserController.cs" />
-    <Compile Include="Areas\Mobile\MobileAreaRegistration.cs" />
-    <Compile Include="Areas\Mobile\Models\Home\IndexViewModel.cs" />
-    <Compile Include="Areas\Mobile\Models\User\ArticleViewModel.cs" />
-    <Compile Include="Areas\Mobile\Models\User\FeedViewModel.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\PocketController.cs" />
     <Compile Include="Models\ControllerExtensions.cs" />
@@ -236,10 +227,8 @@
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RssController.cs" />
-    <Compile Include="Controllers\UserLayoutController.cs" />
     <Compile Include="Models\Home\LoginViewModel.cs" />
     <Compile Include="Models\PocketViewModel.cs" />
-    <Compile Include="Models\UserLayoutViewModel.cs" />
     <Compile Include="Service References\ServiceApi\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -270,77 +259,26 @@
     <Content Include="error.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="51Degrees.mobi.config" />
-    <Content Include="Areas\Mobile\Views\Web.config" />
-    <Content Include="Areas\Mobile\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Mobile\Views\_ViewStart.cshtml" />
-    <Content Include="mob\css\smallrss.css" />
-    <Content Include="mob\image\markread.png" />
-    <Content Include="mob\image\markunread.png" />
-    <Content Include="mob\image\next.png" />
-    <Content Include="mob\image\pocket.png" />
-    <Content Include="mob\image\smallrss.png" />
-    <Content Include="mob\js\jquery-1.9.1.min.map" />
-    <Content Include="Areas\Mobile\Views\Home\Index.cshtml" />
-    <Content Include="Areas\Mobile\Views\User\Feed.cshtml" />
-    <Content Include="Areas\Mobile\Views\User\Article.cshtml" />
-    <None Include="Properties\PublishProfiles\FTP to EC2.pubxml" />
-    <Content Include="mob\image\favicon.ico" />
-    <None Include="mob\js\jquery-1.9.1.intellisense.js" />
-    <Content Include="mob\js\jquery-1.9.1.js" />
-    <Content Include="mob\js\jquery-1.9.1.min.js" />
-    <Content Include="mob\js\simpleStorage-0.1.3.js" />
-    <Content Include="mob\js\smallrss.js" />
-    <Content Include="resource\css\aciTree.css" />
-    <Content Include="resource\css\images\animated-overlay.gif" />
-    <Content Include="resource\css\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
-    <Content Include="resource\css\images\ui-bg_flat_15_cd0a0a_40x100.png" />
-    <Content Include="resource\css\images\ui-bg_glass_100_e4f1fb_1x400.png" />
-    <Content Include="resource\css\images\ui-bg_glass_50_3baae3_1x400.png" />
-    <Content Include="resource\css\images\ui-bg_glass_80_d7ebf9_1x400.png" />
-    <Content Include="resource\css\images\ui-bg_highlight-hard_100_f2f5f7_1x100.png" />
-    <Content Include="resource\css\images\ui-bg_highlight-hard_70_000000_1x100.png" />
-    <Content Include="resource\css\images\ui-bg_highlight-soft_100_deedf7_1x100.png" />
-    <Content Include="resource\css\images\ui-bg_highlight-soft_25_ffef8f_1x100.png" />
-    <Content Include="resource\css\images\ui-icons_2694e8_256x240.png" />
-    <Content Include="resource\css\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="resource\css\images\ui-icons_3d80b3_256x240.png" />
-    <Content Include="resource\css\images\ui-icons_72a7cf_256x240.png" />
-    <Content Include="resource\css\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="resource\css\jquery-ui-1.10.2.custom.css" />
-    <Content Include="resource\css\jquery.splitter.css" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="resource\css\smallrss.css" />
-    <Content Include="resource\css\ui.jqgrid.css" />
-    <Content Include="resource\image\google.ico.png" />
-    <Content Include="resource\image\load-node.gif" />
-    <Content Include="resource\image\load-root.gif" />
-    <Content Include="resource\image\myopenid.ico.png" />
-    <Content Include="resource\image\openid.ico.png" />
+    <Content Include="resource\image\markread.png" />
+    <Content Include="resource\image\markunread.png" />
+    <Content Include="resource\image\next.png" />
+    <Content Include="resource\image\pocket.png" />
     <Content Include="resource\image\smallrss.png" />
-    <Content Include="resource\image\symantec.ico.png" />
-    <Content Include="resource\image\tree-branch-rtl.png" />
-    <Content Include="resource\image\tree-no-branches-rtl.png" />
-    <Content Include="resource\image\tree-no-branches.png" />
-    <Content Include="resource\image\tree-rtl.png" />
-    <Content Include="resource\image\tree.png" />
-    <Content Include="resource\js\grid.locale-en.js" />
-    <Content Include="resource\js\jquery.aciPlugin.js" />
-    <Content Include="resource\js\jquery.aciTree.js" />
     <Content Include="resource\js\jquery-1.9.1.min.map" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\FTP to EC2.pubxml" />
+    <Content Include="resource\image\favicon.ico" />
     <None Include="resource\js\jquery-1.9.1.intellisense.js" />
     <Content Include="resource\js\jquery-1.9.1.js" />
     <Content Include="resource\js\jquery-1.9.1.min.js" />
-    <Content Include="resource\js\jquery.aciPlugin.min.js" />
-    <Content Include="resource\js\jquery.aciTree.min.js" />
-    <Content Include="resource\js\jquery.jqGrid.js" />
-    <Content Include="resource\js\jquery.jqGrid.min.js" />
-    <Content Include="resource\js\jquery.splitter-0.6.js" />
-    <Content Include="resource\js\knockout-2.2.1.debug.js" />
-    <Content Include="resource\js\knockout-2.2.1.js" />
-    <Content Include="resource\js\modernizr-2.6.2.js" />
-    <Content Include="resource\js\sammy-0.7.4.js" />
-    <Content Include="resource\js\sammy-0.7.4.min.js" />
+    <Content Include="resource\js\simpleStorage-0.1.3.js" />
     <Content Include="resource\js\smallrss.js" />
+    <Content Include="resource\image\google.ico.png" />
+    <Content Include="resource\image\myopenid.ico.png" />
+    <Content Include="resource\image\openid.ico.png" />
+    <Content Include="resource\image\symantec.ico.png" />
     <None Include="Service References\ServiceApi\smallrss.disco" />
     <None Include="Service References\ServiceApi\configuration91.svcinfo" />
     <None Include="Service References\ServiceApi\configuration.svcinfo" />
@@ -360,12 +298,10 @@
     </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Manage\Edit.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Service References\ServiceApi\smallrss.wsdl" />
     <None Include="Service References\ServiceApi\smallrss.xsd">
       <SubType>Designer</SubType>

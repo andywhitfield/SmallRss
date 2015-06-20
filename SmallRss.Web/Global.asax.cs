@@ -14,7 +14,6 @@ namespace SmallRss.Web
         protected void Application_Start()
         {
             XmlConfigurator.Configure();
-            AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

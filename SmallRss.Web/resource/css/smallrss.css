@@ -1,102 +1,52 @@
-﻿body {
-    margin-top: 0;
-}
+﻿body, li, div, span, a, td, button { font-family: sans-serif; font-size: 11pt; }
+a, a:active, a:link, a:visited, a:hover { color: #000000; }
+a:hover { text-decoration: none; }
 
-body, p, div, span, a {
-    font-family: Verdana, Georgia, sans-serif;
-    font-size: 10pt;
-}
+header h1 { float: left; font-size: 14pt; padding: 5px 5px 0 0; margin: 0; }
+header span.actions { float: right; }
+header { clear: both; margin: 5px 5px 5px 0px }
 
-a, a:link, a:visited {
-    color: #2779aa;
-}
-a:hover, a:active {
-    color: #ff6a00;
-}
+.focused { border-width: 2px; border-style: dotted; border-color: #baddff; }
+.focused td { border-top-width: 2px; border-top-style: dotted; border-top-color: #baddff; border-bottom-width: 2px; border-bottom-style: dotted; border-bottom-color: #baddff; }
 
-input {
-    margin: 0 0 8px 0;
-}
+.group-section div, .feed-title { font-size: 13pt; margin-bottom: 3px; padding: 2px; background-color: #baddff; font-weight: bold; cursor: default; }
+ul.feed-list { list-style-type: none; padding: 0 0 0 0; margin: 5px 0 20px 0; }
+.feed-list li { margin: 2px; padding: 3px; color: #444444; background-color: #f2f9ff; cursor: default; }
+.feed-list li:hover { color: #000000; }
+.feed-list li[data-count="0"] { color: #aaaaaa; }
 
-header img {
-    float: left;
-    margin: 3px 4px 0 0;
-    border: 0;
+table.article-list { width: 100%; }
+.article-list td { color: #444444; background-color: #f2f9ff; }
+.article-list thead td { font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; }
+.article-list tbody tr { cursor: default; }
+.article-list tbody tr:hover td { color: #000000; }
+			
+tr.article { vertical-align: top; }
+.article-title { min-width: 30%; }
+.article-summary { min-width: 70%; }
+.article-date { min-width: 70px; }
+.article-pocket { min-width: 32px; text-align: center; }
+.article-read { min-width: 32px; text-align: center; }
+@media screen and (max-width: 700px) {
+	.article-date { display: none; }
 }
+@media screen and (max-width: 550px) {
+	.article-summary { display: none; }
+}
+.article-marked-read td, tr.article-marked-read:hover { color: #aaaaaa !important; }
+.show-all-articles { margin: 10px 0 10px 0; }
+			
+.article-actions { float: right; padding: 0 0 10px 0; }
+div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; border-top: 2px solid #baddff; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }
 
-header h1 {
-    float: left;
-    margin: 0 0 10px 0;
-}
-header span.manage {
-    float: right;
-    margin-top: 6px;
-}
+button.image { background-color: transparent; cursor: pointer; margin: 0; padding: 0 5px 0 5px; border: 0; width: 42px; height: 32px; }
 
-article {
-    clear: both;
-}
-
-#mainPanel {
-    position: absolute;
-    top: 35px;
-    left: 5px;
-    right: 5px;
-    bottom: 5px;
-    border: 1px solid #000;
-    overflow: hidden;
-}
-
-.unread-item {
-    font-weight: bold;
-}
-
-.feedTreeAlt {
-    margin: 8px;
-}
-
-.error {
-    font-weight: bold;
-    font-size: 11pt;
-    color: #f00;
-}
-
-.articleLink {
-    font-weight: bold;
-    font-size: 13pt;
-}
-
-.articleActions {
-    margin-top: 10px;
-    padding-top: 6px;
-    border-top: 1px dotted #000;
-}
-
-.openid {
-    background-repeat: no-repeat; background-position: left;
-    border: 1px solid black;
-    padding: 3px 6px 3px 6px;
-}
-.openidGoogle {
-    background-image: url(../image/google.ico.png); 
-}
-.openidMyopenid {
-    background-image: url(../image/myopenid.ico.png);
-}
-.openidSymantec {
-    background-image: url(../image/symantec.ico.png);
-}
-.openidCustom {
-    background-image: url(../image/openid.ico.png);
-}
-
-.manageForm label {
-    float: left;
-    width: 100px;
-}
-tr.manage {
-    vertical-align: top;
-}
-.longinput {
-    width: 217px;
-}
+/* manage screen styles */
+.openid { background-repeat: no-repeat; background-position: left; border: 1px solid black; padding: 3px 6px 3px 6px; }
+.openidGoogle { background-image: url(../image/google.ico.png); }
+.openidMyopenid { background-image: url(../image/myopenid.ico.png); }
+.openidSymantec { background-image: url(../image/symantec.ico.png); }
+.openidCustom { background-image: url(../image/openid.ico.png); }
+.manageForm label { float: left; width: 100px; }
+tr.manage { vertical-align: top; }
+.longinput { width: 217px; }

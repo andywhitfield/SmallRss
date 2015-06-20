@@ -2,29 +2,31 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="@Url.Content("~/resource/image/smallrss.png")" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="@Url.Content("~/resource/image/smallrss.png")" sizes="32x32" />
         <title>SmallRss</title>
-        <script type="text/javascript">
-            var urls = {
-                feedstatus_api: '@Url.Action("feedstatus", "api")',
-                article_api: '@Url.Action("article", "api")',
-                feed_api: '@Url.Action("feed", "api")',
-                userlayout_api: '@Url.Action("userlayout", "api")'
-            };
-        </script>
         @Styles.Render("~/resource/css/allcss")
         @Scripts.Render("~/resource/js/alljs")
+        @RenderSection("HeaderScripts", required: false)
     </head>
     <body>
         <header>
             <a href="@Url.Action("", "")"><img src="@Url.Content("~/resource/image/smallrss.png")" width="28" height="28" alt="SmallRss" /><h1>SmallRss</h1></a>
+            <span class="actions">
             @if (User != null && User.Identity.IsAuthenticated) {
-            <span class="manage"><a href="@Url.Action("", "manage")">Manage feeds</a> | <a href="@Url.Action("logout", "home")">Logout</a></span>
+                <text>
+                <a href="@Url.Content("~/manage")">Manage Feeds</a> |
+                <a href="@Url.Content("~/home/logout")">Logout</a>
+                </text>
+            } else {
+                <a href="@Url.Content("~/home/login")">Login</a>
             }
+            </span>
         </header>
-        <article>
+
         @RenderBody()
-        </article>
+
         @RenderSection("scripts", required: false)
     </body>
 </html>
