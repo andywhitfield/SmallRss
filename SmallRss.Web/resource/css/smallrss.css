@@ -20,7 +20,7 @@ table.article-list { width: 100%; }
 .article-list thead td { font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; }
 .article-list tbody tr { cursor: default; }
 .article-list tbody tr:hover td { color: #000000; }
-			
+
 tr.article { vertical-align: top; }
 .article-title { min-width: 30%; }
 .article-summary { min-width: 70%; }
@@ -35,11 +35,13 @@ tr.article { vertical-align: top; }
 }
 .article-marked-read td, tr.article-marked-read:hover { color: #aaaaaa !important; }
 .show-all-articles { margin: 10px 0 10px 0; }
-			
+
 .article-actions { float: right; padding: 0 0 10px 0; }
 div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; border-top: 2px solid #baddff; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }
 
 button.image { background-color: transparent; cursor: pointer; margin: 0; padding: 0 5px 0 5px; border: 0; width: 42px; height: 32px; }
+
+.notify { position: fixed; top: 5px; left: 130px; padding: 5px; background-color: #f2f9ff; color: #000000; border: 1px solid #baddff; filter: alpha(opacity=80); opacity: 0.8; }
 
 /* manage screen styles */
 .openid { background-repeat: no-repeat; background-position: left; border: 1px solid black; padding: 3px 6px 3px 6px; }

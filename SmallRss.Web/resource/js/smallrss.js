@@ -1,7 +1,9 @@
 ﻿var localSettings;
 var feeds;
+var notifyWindow;
 
 function loadLocalSettings() {
+    notifyWindow = new Notify();
     localSettings = simpleStorage.get('smallrss');
     if (localSettings == undefined) {
         localSettings = { showAll: false };
@@ -52,7 +54,9 @@ function buildItemsFromFeed(feed) {
 }
 function refreshFeedCounts(onRefreshCompleteFunc) {
     console.log('refreshing feed count');
+    notifyWindow.show('Refreshing feeds...', false);
     $.getJSON(smallrss_config.feedstatus_api, function (data) {
+        notifyWindow.close();
         // reset all groups & item counts to zero
         for (var grpIdx = 0; grpIdx < feeds.length; grpIdx++) {
             var group = feeds[grpIdx];
@@ -188,7 +192,9 @@ function showAllArticles() {
     console.log('toggle showing all articles');
     smallrss_config.showingAllArticles = !smallrss_config.showingAllArticles;
     $(this).text(smallrss_config.showingAllArticles ? 'Show unread articles' : 'Show all articles');
+    notifyWindow.show('Updating articles...', false);
     $.post(smallrss_config.feedstatus_api, { showall: smallrss_config.showingAllArticles }, function () {
+        notifyWindow.close();
         if (feeds.selectedFeed == null || feeds.selectedFeedGroup == null) return;
         loadArticlesForFeedAndGroup(feeds.selectedFeed, feeds.selectedFeedGroup);
     });
@@ -200,7 +206,9 @@ function showArticle() {
 }
 function handleArticleClicked(clickedArticle) {
     console.log('calling article.json for article ' + clickedArticle);
+    notifyWindow.show('Loading article...', false);
     $.getJSON(smallrss_config.article_api + '/' + clickedArticle, function (data) {
+        notifyWindow.close();
         feeds.selectedFeedArticle = data;
         markArticleId(clickedArticle, true, function () {
             updateUI();
@@ -223,7 +231,9 @@ function saveArticleToPocket() {
 }
 function saveArticleIdToPocket(articleId, onSaveCompleted) {
     console.log('calling pocket api for article ' + articleId);
+    notifyWindow.show('Saving...', false);
     $.post(smallrss_config.pocket_api, { articleId: articleId }, function (result) {
+        notifyWindow.show('Saved.', true);
         console.log('pocket api completed for article ' + articleId + ': ' + result.saved);
         if (onSaveCompleted != undefined && onSaveCompleted != null)
             onSaveCompleted(articleId);
@@ -245,7 +255,9 @@ function markAllArticlesRead() {
         }
     }
     if (serverUpdateRequired) {
+        notifyWindow.show('Marking all read...', false);
         $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, read: true, maxStory: maxArticleId, offset: getUtcOffset() }, function () {
+            notifyWindow.close();
             console.log('marked all articles read');
             feeds.selectedFeed.count = 0;
             updateUI();
@@ -278,7 +290,9 @@ function toggleArticleIdRead(articleId) {
     feeds.selectedFeed.count = unreadCount;
 
     if (feedToUpdate != null) {
+        notifyWindow.show('Marking as ' + (feedToUpdate.read ? 'read' : 'unread') + '...', false);
         $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: feedToUpdate.read }, function () {
+            notifyWindow.close();
             updateUI();
         });
     } else {
@@ -339,8 +353,10 @@ function handleFeedClicked(feedElement) {
 }
 function loadArticlesForFeedAndGroup(feed, group) {
     console.log('feed clicked: #' + feed.id + '=' + feed.item + ' (group#' + group.id + '=' + group.item + ')');
+    notifyWindow.show('Loading articles...', false);
 
     $.getJSON(smallrss_config.feed_api + "/" + feed.id + "?offset=" + getUtcOffset(), function (data) {
+        notifyWindow.close();
         feeds.selectedFeed = feed;
         feeds.selectedFeedGroup = group;
         feeds.selectedFeedArticles = data;
@@ -400,7 +416,9 @@ function markArticleId(articleId, read, markedAsReadCompleted) {
 
     if (serverUpdateRequired) {
         console.log('letting server know that story ' + articleId + ' should be marked read/unread: ' + read);
+        notifyWindow.show('Marking as ' + (read ? 'read' : 'unread') + '...', false);
         $.post(smallrss_config.article_api, { feed: feeds.selectedFeed.id, story: articleId, read: read }, function () {
+            notifyWindow.close();
             if (markedAsReadCompleted != undefined && markedAsReadCompleted != null)
                 markedAsReadCompleted(unreadArticle);
         });
@@ -645,4 +663,53 @@ function focusArticle(nextOrPrevious) {
 }
 function getUtcOffset() {
     return new Date().getTimezoneOffset();
+}
+
+/* notification window */
+function Notify() {
+    var _self = this;
+
+    // fields
+
+    this._notifyItem = $('<div class="notify"/>');
+    this._showTimeoutId = 0;
+
+    // constructor
+
+    this._notifyItem.hide();
+    $('body').append(this._notifyItem);
+
+    // methods
+
+    this.show = function (message, autoClose) {
+        _self._notifyItem.text(message);
+        if (_self._showTimeoutId === 0) {
+            console.log('showing notification');
+            _self._notifyItem.show();
+        } else {
+            // cancel timeout
+            window.clearTimeout(_self._showTimeoutId);
+            _self._showTimeoutId = 0;
+            console.log('cleared previous timeout ' + _self._showTimeoutId);
+        }
+
+        if (autoClose) {
+            _self._showTimeoutId = window.setTimeout(function () {
+                console.log('hiding notification');
+                _self._notifyItem.hide();
+                _self._showTimeoutId = 0;
+            }, 3000);
+        }
+    };
+    this.close = function () {
+        console.log('closing notification');
+        _self._notifyItem.hide();
+        _self._notifyItem.text('');
+        if (_self._showTimeoutId != 0) {
+            // cancel timeout
+            window.clearTimeout(_self._showTimeoutId);
+            console.log('cleared previous timeout ' + _self._showTimeoutId);
+            _self._showTimeoutId = 0;
+        }
+    }
 }
