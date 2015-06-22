@@ -682,6 +682,10 @@ function Notify() {
     // methods
 
     this.show = function (message, autoClose) {
+        // TODO: could make this a bit better by only actually showing the notification
+        //       window if close doesn't get called within a certain period (at the moment,
+        //       if the server response is fast, then you get an annoying 'flicker' of the
+        //       notification popup appearing then going away again.
         _self._notifyItem.text(message);
         if (_self._showTimeoutId === 0) {
             console.log('showing notification');
