@@ -185,7 +185,12 @@ function buildFeedArticles() {
         feedHtml += '</tr>';
     }
     feedHtml += '</tbody></table>';
-    feedHtml += '<div><button class="show-all-articles">' + (smallrss_config.showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button></div>';
+    feedHtml += '<div>';
+    feedHtml += '<button class="show-all-articles">' + (smallrss_config.showingAllArticles ? 'Show unread articles' : 'Show all articles') + '</button>';
+    if (feeds.selectedFeed.link != '') {
+        feedHtml += ' <a href="' + feeds.selectedFeed.link + '" target="_blank">' + feeds.selectedFeed.link + '</a>';
+    }
+    feedHtml += '</div>';
     return feedHtml;
 }
 function showAllArticles() {

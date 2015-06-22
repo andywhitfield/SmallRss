@@ -40,7 +40,7 @@ namespace SmallRss.Web.Controllers
                     item = group.Key,
                     props = new { isFolder = true, open = loggedInUser.ExpandedGroups.Contains(group.Key) },
                     items = group.OrderBy(g => g.Name).Select(g =>
-                        new { id = g.Id, item = g.Name, props = new { isFolder = false } })
+                        new { id = g.Id, item = g.Name, link = datastore.Load<RssFeed>(g.RssFeedId).Link ?? string.Empty, props = new { isFolder = false } })
                 });
         }
 

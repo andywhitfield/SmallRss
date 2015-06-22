@@ -20,6 +20,7 @@ GO
 CREATE TABLE [dbo].[RssFeed](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Uri] [nvarchar](500) NOT NULL,
+	[Link] [nvarchar](500) NULL,
 	[LastUpdated] [datetime] NULL,
 	[LastRefreshed] [datetime] NULL,
  CONSTRAINT [PK_RssFeed] PRIMARY KEY CLUSTERED 

@@ -129,6 +129,7 @@ namespace SmallRss.Service
                     rssFeed.LastUpdated = lastItemUpdate;
                 }
                 rssFeed.LastRefreshed = DateTime.UtcNow;
+                rssFeed.Link = feed.Link;
                 datastore.Update(rssFeed);
             }
         }

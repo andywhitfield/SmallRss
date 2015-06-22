@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss.Web", "SmallRss.Web\SmallRss.Web.csproj", "{4E484CA3-7D50-4FA3-B5E6-DC8FEFB305F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{05BBFDCB-BCD8-43AC-A47A-72C2E0B11F5C}"
@@ -11,6 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallRss", "SmallRss\SmallR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{3011F405-46E3-4963-9E18-CCF75F557480}"
 	ProjectSection(SolutionItems) = preProject
+		2015-06-22-18-25.sql = 2015-06-22-18-25.sql
 		CreateFullSchema.sql = CreateFullSchema.sql
 	EndProjectSection
 EndProject
