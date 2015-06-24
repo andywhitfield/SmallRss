@@ -696,10 +696,6 @@ function Notify() {
     // methods
 
     this.show = function (message, autoClose) {
-        // TODO: could make this a bit better by only actually showing the notification
-        //       window if close doesn't get called within a certain period (at the moment,
-        //       if the server response is fast, then you get an annoying 'flicker' of the
-        //       notification popup appearing then going away again.
         _self._notifyItem.text(message);
         if (_self._showTimeoutId === 0) {
             console.log('showing notification');
@@ -712,22 +708,16 @@ function Notify() {
         }
 
         if (autoClose) {
-            _self._showTimeoutId = window.setTimeout(function () {
-                console.log('hiding notification');
-                _self._notifyItem.hide();
-                _self._showTimeoutId = 0;
-            }, 3000);
+            _self._showTimeoutId = window.setTimeout(function () { _self._close(); }, 3000);
         }
     };
     this.close = function () {
+        _self._showTimeoutId = window.setTimeout(function () { _self._close(); }, 750);
+    };
+    this._close = function () {
         console.log('closing notification');
         _self._notifyItem.hide();
         _self._notifyItem.text('');
-        if (_self._showTimeoutId != 0) {
-            // cancel timeout
-            window.clearTimeout(_self._showTimeoutId);
-            console.log('cleared previous timeout ' + _self._showTimeoutId);
-            _self._showTimeoutId = 0;
-        }
-    }
+        _self._showTimeoutId = 0;
+    };
 }
