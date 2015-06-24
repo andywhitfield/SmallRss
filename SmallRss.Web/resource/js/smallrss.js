@@ -280,6 +280,14 @@ function toggleSelectedArticleRead() {
     if (feeds.selectedFeedArticle == null) return;
     toggleArticleIdRead(feeds.selectedFeedArticle.id);
 }
+function updateSelectedFeedCount() {
+    var unreadCount = 0;
+    for (var i = 0; i < feeds.selectedFeedArticles.length; i++) {
+        unreadCount += feeds.selectedFeedArticles[i].read ? 0 : 1;
+    }
+    console.log('updated feed ' + feeds.selectedFeed.id + ' count to ' + unreadCount);
+    feeds.selectedFeed.count = unreadCount;
+}
 function toggleArticleIdRead(articleId) {
     console.log('mark article read: ' + articleId);
     var unreadCount = 0;
@@ -365,6 +373,7 @@ function loadArticlesForFeedAndGroup(feed, group) {
         feeds.selectedFeed = feed;
         feeds.selectedFeedGroup = group;
         feeds.selectedFeedArticles = data;
+        updateSelectedFeedCount();
         updateUI();
     });
 }
