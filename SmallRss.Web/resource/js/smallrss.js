@@ -50,7 +50,7 @@ function buildTreeFromFeeds() {
     }
     $('.group-section div', feeds.allGroupsSection).click(toggleShowAll);
     $('.feed-list li', feeds.allGroupsSection).click(onFeedClicked);
-    $('#refresh-feed-status', feeds.allGroupsSection).click(refreshFeedCounts);
+    $('#refresh-feed-status', feeds.allGroupsSection).click(function () { refreshFeedCounts(); });
 }
 function buildItemsFromFeed(feed) {
     var itemsHtml = '<article><ul class="feed-list">';
@@ -112,7 +112,24 @@ function findItemInGroup(group, feedId) {
     }
     return null;
 }
+function autoRefreshFeedStatus() {
+    if (feeds.autoRefreshFeedStatusTimer != undefined && feeds.autoRefreshFeedStatusTimer != 0) {
+        // cancel previous refresh
+        console.log('clearing auto refresh timer: ' + feeds.autoRefreshFeedStatusTimer);
+        window.clearTimeout(feeds.autoRefreshFeedStatusTimer);
+        feeds.autoRefreshFeedStatusTimer = 0;
+    }
+    // if we're on the main screen, set the auto refresh feed status timer to poll every 10 mins
+    if (feeds.selectedFeedArticle == null && feeds.selectedFeed == null) {
+        feeds.autoRefreshFeedStatusTimer = window.setTimeout(function () {
+            feeds.autoRefreshFeedStatusTimer = 0;
+            refreshFeedCounts();
+        }, 10 * 60 * 1000);
+        console.log('setup auto refresh feed status timer: ' + feeds.autoRefreshFeedStatusTimer);
+    }
+}
 function updateUI() {
+    autoRefreshFeedStatus();
     feeds.allGroupsSection.hide();
     feeds.selectedFeedSection.hide();
     feeds.selectedArticleSection.hide();
