@@ -25,12 +25,13 @@ tr.article { vertical-align: top; }
 .article-title { min-width: 30%; }
 .article-summary { min-width: 70%; }
 .article-date { min-width: 70px; }
-.article-pocket { min-width: 32px; text-align: center; }
-.article-read { min-width: 32px; text-align: center; }
+.article-pocket { width: 32px; text-align: center; }
+.article-read { width: 32px; text-align: center; }
 @media screen and (max-width: 700px) {
 	.article-date { display: none; }
 }
 @media screen and (max-width: 550px) {
+    .article-title { width: 100%; }
 	.article-summary { display: none; }
 }
 .article-marked-read td, tr.article-marked-read:hover { color: #aaaaaa !important; }
