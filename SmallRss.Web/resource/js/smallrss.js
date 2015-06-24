@@ -37,6 +37,14 @@ function buildTreeFromFeeds() {
         newSection += '</section>';
         feeds.allGroupsSection.append(newSection);
     }
+
+    // if we're not showing all, hide all the feeds and then once
+    // the feed status query completes, the unread feeds will magically
+    // appear
+    if (!localSettings.showAll) {
+        $('section', feeds.allGroupsSection).children('article').hide();
+        $('li', feeds.allGroupsSection).hide();
+    }
     $('.group-section div', feeds.allGroupsSection).click(toggleShowAll);
     $('.feed-list li', feeds.allGroupsSection).click(onFeedClicked);
 }
@@ -144,15 +152,11 @@ function updateFeedGroups() {
         }
     }
 
-    // show all groups and items
+    // show all groups and items so that any new articles in a section
+    // that was previously collapsed is now visible
     $('section', feeds.allGroupsSection).children('article').show();
     $('li', feeds.allGroupsSection).show();
 
-    // then hide those that have no unread articles, if we're not showing all
-    // TODO: This has the unfortunate affect of causing them all to show then shrink
-    //       again, which isn't great. But this does fix the issue where new unread
-    //       articles arrive for previously hidden sections and the section remains
-    //       collapsed.
     if (!localSettings.showAll) {
         $('section[data-count="0"]', feeds.allGroupsSection).children('article').hide();
         $('li[data-count="0"]', feeds.allGroupsSection).hide();
