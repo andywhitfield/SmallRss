@@ -30,13 +30,16 @@ function buildTreeFromFeeds() {
     feeds.selectedArticleSection = $('section[name="SelectedArticleSection"]');
     for (var i = 0; i < feeds.length; i++) {
         var group = feeds[i];
-        var newSection = '<section id="' + group.id + '" data-count="0" class="group-section"><div>';
+        var newSection = '<section id="' + group.id + '" data-count="0" class="group-section">';
+        newSection += '<div>';
         newSection += group.item;
-        newSection += ' <span class="group-unread-count"></span></div>';
+        newSection += ' <span class="group-unread-count"></span>';
+        newSection += '</div>';
         newSection += buildItemsFromFeed(group);
         newSection += '</section>';
         feeds.allGroupsSection.append(newSection);
     }
+    feeds.allGroupsSection.append('<div><button id="refresh-feed-status">Refresh Feed Status</button></div>');
 
     // if we're not showing all, hide all the feeds and then once
     // the feed status query completes, the unread feeds will magically
@@ -47,6 +50,7 @@ function buildTreeFromFeeds() {
     }
     $('.group-section div', feeds.allGroupsSection).click(toggleShowAll);
     $('.feed-list li', feeds.allGroupsSection).click(onFeedClicked);
+    $('#refresh-feed-status', feeds.allGroupsSection).click(refreshFeedCounts);
 }
 function buildItemsFromFeed(feed) {
     var itemsHtml = '<article><ul class="feed-list">';
