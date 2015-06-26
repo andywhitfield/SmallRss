@@ -15,6 +15,7 @@ function saveLocalSettings() {
 
 function initialiseFeeds(data) {
     feeds = data;
+    if (feeds.length == 1 && feeds[0].id == '') feeds = [];
 
     feeds.selectedFeed = null;
     feeds.selectedFeedGroup = null;
