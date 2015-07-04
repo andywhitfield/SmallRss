@@ -25,7 +25,7 @@ namespace SmallRss.Web.Controllers
         public Article Get(int id)
         {
             var article = datastore.Load<Article>(id);
-            return new Article { Id = id, Body = HttpUtility.HtmlDecode(article.Body), Url = article.Url };
+            return new Article { Id = id, Body = HttpUtility.HtmlDecode(article.Body), Url = article.Url, Author = article.Author ?? string.Empty };
         }
 
         // POST api/article

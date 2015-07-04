@@ -153,6 +153,7 @@ namespace SmallRss.Service
                         existingArticle.Body = itemInFeed.Content;
                         existingArticle.Url = itemInFeed.Link;
                         existingArticle.Published = itemInFeed.DatePublished.ToUniversalTime();
+                        existingArticle.Author = itemInFeed.Author;
                         datastore.Update(existingArticle);
                     }
                 }
@@ -171,6 +172,7 @@ namespace SmallRss.Service
                         Body = itemInFeed.Content,
                         Url = itemInFeed.Link,
                         Published = itemInFeed.DatePublished.ToUniversalTime(),
+                        Author = itemInFeed.Author,
                         ArticleGuid = itemInFeed.Id,
                         RssFeedId = rssFeed.Id
                     });

@@ -37,7 +37,8 @@ tr.article { vertical-align: top; }
 .article-marked-read td, tr.article-marked-read:hover { color: #aaaaaa !important; }
 .show-all-articles { margin: 10px 0 10px 0; }
 
-.article-actions { float: right; padding: 0 0 10px 0; }
+.article-info { float: left; padding: 0 }
+.article-actions { float: right; top: 0; padding: 0 0 10px 0; }
 div.article-heading { clear: both; font-size: 13pt; font-weight: bold; border-bottom: 2px solid #baddff; border-top: 2px solid #baddff; padding: 10px 0 10px 0; margin: 3px 0 3px 0; }
 
 button.image { background-color: transparent; cursor: pointer; margin: 0; padding: 0 5px 0 5px; border: 0; width: 42px; height: 32px; }

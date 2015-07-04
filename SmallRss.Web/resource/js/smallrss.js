@@ -362,7 +362,7 @@ function buildFeedArticle() {
     articleHtml += '</div>';
 
     articleHtml += '<div>';
-    articleHtml += '<div><span>' + articleSummary.posted + '</span><span class="article-actions">'+(smallrss_config.connectedToPocket ? '<button class="send-to-pocket image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Send to Pocket"></button>' : '')+'<button class="toggle-read image">' + (articleSummary.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
+    articleHtml += '<div><span class="article-info">' + articleSummary.posted + '<br><em>' + feeds.selectedFeedArticle.author + '</em></span><span class="article-actions">'+(smallrss_config.connectedToPocket ? '<button class="send-to-pocket image"><img src="' + smallrss_config.imageroot + 'image/pocket.png" alt="Send to Pocket"></button>' : '')+'<button class="toggle-read image">' + (articleSummary.read ? '<img src="' + smallrss_config.imageroot + 'image/markunread.png" alt="Mark as unread">' : '<img src="' + smallrss_config.imageroot + 'image/markread.png" alt="Mark as read">') + '</button></span></div>';
     articleHtml += '<div class="article-heading"><a href="' + feeds.selectedFeedArticle.url + '" target="_blank">' + articleSummary.heading + '</a></div>';
     articleHtml += '<div>' + feeds.selectedFeedArticle.body + '</div>';
     articleHtml += '<div><span class="article-actions"><button class="next-article image"><img src="'+smallrss_config.imageroot+'image/next.png" alt="Next article"></button></span></div>';

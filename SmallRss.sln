@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{3011F405-46E3-4963-9E18-CCF75F557480}"
 	ProjectSection(SolutionItems) = preProject
 		2015-06-22-18-25.sql = 2015-06-22-18-25.sql
+		2015-07-04-19-30.sql = 2015-07-04-19-30.sql
 		CreateFullSchema.sql = CreateFullSchema.sql
 	EndProjectSection
 EndProject

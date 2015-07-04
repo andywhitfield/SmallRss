@@ -17,6 +17,7 @@ namespace SmallRss.Data.Models
         public string Heading { get; set; }
         public string Body { get; set; }
         public string Url { get; set; }
+        public string Author { get; set; }
         public DateTime? Published { get; set; }
     }
 }
