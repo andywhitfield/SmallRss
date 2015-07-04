@@ -5,10 +5,10 @@
 @section HeaderScripts {
 <script type="text/javascript">
     var smallrss_config = {
-        feedstatus_api: '/api/feedstatus', // '@Url.Action("feedstatus", "api")',
-        article_api: '/api/article', // '@Url.Action("article", "api")',
-        feed_api: '/api/feed', // '@Url.Action("feed", "api")'
-        pocket_api: '/api/pocket', // '@Url.Action("pocket", "api")'
+        feedstatus_api: '@Url.Action("feedstatus", "api")',
+        article_api: '@Url.Action("article", "api")',
+        feed_api: '@Url.Action("feed", "api")',
+        pocket_api: '@Url.Action("pocket", "api")',
         imageroot: '@Url.Content("~/resource/")',
         showingAllArticles: @(Model.ShowAllArticles.ToString().ToLower()),
         connectedToPocket: @(Model.ConnectedToPocket.ToString().ToLower()),

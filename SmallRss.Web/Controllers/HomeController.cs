@@ -97,14 +97,7 @@ namespace SmallRss.Web.Controllers
                         }
                         else
                         {
-                            if (Request.Browser.IsMobileDevice)
-                            {
-                                return Redirect("~/m/");
-                            }
-                            else
-                            {
-                                return RedirectToAction("", "");
-                            }
+                            return RedirectToAction("", "");
                         }
                     case AuthenticationStatus.Canceled:
                         return View(new LoginViewModel { Message = "Canceled at provider" });
