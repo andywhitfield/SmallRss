@@ -205,8 +205,8 @@ and uar.Id is null", feed.RssFeedId, feed.UserAccountId);
         {
             using (var txn = db.GetTransaction())
             {
-                var archived = db.Execute(@"insert into ArticleArchive([Inserted], [ArticleId], [RssFeedId], [ArticleGuid], [Heading], [Body], [Url], [Published])
-select GETUTCDATE(),a.*
+                var archived = db.Execute(@"insert into ArticleArchive([Inserted], [ArticleId], [RssFeedId], [ArticleGuid], [Heading], [Body], [Url], [Published], [Author])
+select GETUTCDATE(),a.[ArticleId], [RssFeedId], [ArticleGuid], [Heading], [Body], [Url], [Published], [Author]
 from Article a
 where a.RssFeedId = @0
 and a.Id not in (
