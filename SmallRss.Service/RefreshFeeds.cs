@@ -121,6 +121,8 @@ namespace SmallRss.Service
             {
                 var feed = feedFactory.CreateFeed(new Uri(rssFeed.Uri));
                 var lastItemUpdate = feed.Items.Select(i => i.DatePublished.ToUniversalTime()).Concat(new[] { feed.LastUpdated.ToUniversalTime() }).Max();
+                if (lastItemUpdate > DateTime.UtcNow)
+                    lastItemUpdate = DateTime.UtcNow;
 
                 log.DebugFormat("Feed {0} was last updated {1} - our version was updated: {2}", rssFeed.Uri, lastItemUpdate, rssFeed.LastUpdated);
                 if (!rssFeed.LastUpdated.HasValue || lastItemUpdate > rssFeed.LastUpdated)
