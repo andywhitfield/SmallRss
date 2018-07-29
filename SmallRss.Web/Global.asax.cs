@@ -1,4 +1,5 @@
 ﻿using log4net.Config;
+using System.Net;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -14,6 +15,9 @@ namespace SmallRss.Web
         protected void Application_Start()
         {
             XmlConfigurator.Configure();
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

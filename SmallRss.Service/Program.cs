@@ -2,6 +2,7 @@
 using Ninject;
 using SmallRss.Service.Api;
 using SmallRss.Service.Jobs;
+using System.Net;
 using Topshelf;
 
 namespace SmallRss.Service
@@ -12,6 +13,9 @@ namespace SmallRss.Service
         {
             XmlConfigurator.Configure();
             var ninject = new NinjectConfig();
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             HostFactory.Run(h =>
             {
