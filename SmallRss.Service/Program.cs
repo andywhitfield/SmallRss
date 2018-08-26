@@ -15,7 +15,7 @@ namespace SmallRss.Service
             var ninject = new NinjectConfig();
 
             ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
             HostFactory.Run(h =>
             {
